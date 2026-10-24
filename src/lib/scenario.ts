@@ -55,7 +55,6 @@ export type Scenario = {
 };
 
 export const MAX_CLIENTS_PER_LINE = 20;
-export const MAX_LINES = 12;
 
 export const DEFAULT_SETTINGS: Readonly<ScenarioSettings> = Object.freeze({
   feeBps: REFERRAL_TERMS.defaultFeeBps,
@@ -166,79 +165,17 @@ export function run(scenario: Scenario): SimulationOutput {
   return simulate(toInput(scenario));
 }
 
-/** Settings differ from the proposal (used to flag a negotiation scenario). */
-export function settingsAdjusted(settings: ScenarioSettings) {
-  return (Object.keys(DEFAULT_SETTINGS) as (keyof ScenarioSettings)[]).some(
-    (k) => settings[k] !== DEFAULT_SETTINGS[k],
-  );
-}
+export type Counts = Partial<Record<ServiceId, number>>;
 
-export type Preset = {
-  id: string;
-  name: string;
-  description: string;
-  lines: Omit<ReferralLine, "id">[];
-};
-const line = (p: Partial<ReferralLine>): Omit<ReferralLine, "id"> => {
-  const { id: _id, ...rest } = newLine(p);
-  void _id;
-  return rest;
-};
-
-/** Three illustrative cases. Their assumptions are the lines themselves, shown in full. */
-export const PRESETS: readonly Preset[] = [
-  {
-    id: "first",
-    name: "One agency, one brand",
-    description:
-      "A Growth real estate agency from month 1 and a Professional Branding project paid in month 2.",
-    lines: [
-      line({ service: "reGrowth", count: 1, startMonth: 1 }),
-      line({ service: "professional", count: 1, startMonth: 2 }),
-    ],
-  },
-  {
-    id: "quarterly",
-    name: "An agency each quarter",
-    description:
-      "A new Growth real estate agency in months 1, 4, 7 and 10, plus two Professional Branding projects.",
-    lines: [
-      line({ service: "reGrowth", count: 1, startMonth: 1 }),
-      line({ service: "reGrowth", count: 1, startMonth: 4 }),
-      line({ service: "reGrowth", count: 1, startMonth: 7 }),
-      line({ service: "reGrowth", count: 1, startMonth: 10 }),
-      line({ service: "professional", count: 2, startMonth: 3 }),
-    ],
-  },
-  {
-    id: "mix",
-    name: "A broader mix",
-    description:
-      "Two brand refreshes, one Professional brand with strategy, a Volume agency from month 5 and an Essential creative retainer from month 3.",
-    lines: [
-      line({ service: "basic", count: 1, startMonth: 1 }),
-      line({ service: "basic", count: 1, startMonth: 6 }),
-      line({ service: "professional", count: 1, startMonth: 4, strategy: true }),
-      line({ service: "volume", count: 1, startMonth: 5 }),
-      line({ service: "essential", count: 1, startMonth: 3 }),
-    ],
-  },
-];
-
-export function presetScenario(id: string, settings: ScenarioSettings = { ...DEFAULT_SETTINGS }): Scenario {
-  const preset = PRESETS.find((p) => p.id === id) ?? PRESETS[0];
+/** The calculator's scenario: each package's clients sign and pay in month 1,
+ * and monthly clients pay every month of the 12-month view. */
+export function countsScenario(counts: Counts): Scenario {
   return {
-    lines: preset.lines.map((l, i) => ({ ...l, id: `${preset.id}-${i + 1}` })),
-    settings,
+    lines: Object.entries(counts)
+      .filter(([, n]) => (n ?? 0) > 0)
+      .map(([service, count]) =>
+        newLine({ id: service, service: service as ServiceId, count: count!, startMonth: 1 }),
+      ),
+    settings: { ...DEFAULT_SETTINGS },
   };
 }
-
-/** Which preset (if any) the current lines still match exactly. */
-export function matchingPreset(lines: ReferralLine[]): string | null {
-  const strip = (l: Omit<ReferralLine, "id">) =>
-    JSON.stringify([l.service, l.count, l.startMonth, l.strategy, l.strategyCents, l.agencyAddOn, l.customMonthlyCents, l.stayMonths]);
-  const current = lines.map(strip).join("|");
-  return PRESETS.find((p) => p.lines.map(strip).join("|") === current)?.id ?? null;
-}
-
-export const DEFAULT_SCENARIO: Scenario = presetScenario("first");

@@ -8,8 +8,6 @@
  * Nothing here is an accepted or signed term.
  */
 
-export const CATALOG_VERSION = "V1 working draft · pending commercial review";
-
 export type BrandingId = "basic" | "professional";
 export type RealEstateId = "boutique" | "reGrowth" | "volume" | "reCustom";
 export type CreativeId = "essential" | "creativeGrowth" | "embedded";
@@ -190,10 +188,6 @@ export const SERVICES: Readonly<Record<ServiceId, Service>> = {
   },
 };
 
-export const BRANDING_IDS = ["basic", "professional"] as const;
-export const REAL_ESTATE_IDS = ["boutique", "reGrowth", "volume"] as const;
-export const CREATIVE_IDS = ["essential", "creativeGrowth", "embedded"] as const;
-
 /** Brand Strategy & Positioning: an add-on to a branding project, never a base tier. */
 export const STRATEGY_ADD_ON = {
   name: "Brand Strategy & Positioning",
@@ -348,7 +342,3 @@ export const MODEL_DEFAULTS = {
 export function isRetainer(service: Service): service is RetainerService {
   return service.billing === "monthly";
 }
-export function service(id: ServiceId): Service {
-  return SERVICES[id];
-}
-export const ALL_SERVICE_IDS = Object.keys(SERVICES) as ServiceId[];
