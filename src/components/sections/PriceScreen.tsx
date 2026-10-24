@@ -1,7 +1,7 @@
 import { CAP_MONTHS, RATE_BPS, type PriceList, type PriceRow } from "@/data/pricing";
 import { money } from "@/lib/format";
 import { commissionOn } from "@/lib/referral-model";
-import { Disclosure, Screen } from "../Primitives";
+import { Disclosure, Screen, emphasise } from "../Primitives";
 
 const per = (billing: PriceRow["billing"]) => (billing === "once" ? "one-off" : "per month");
 
@@ -22,7 +22,7 @@ function earns(row: PriceRow) {
 /** The same price list for every service: package, what it is, price, Real Coder's 10%. */
 export default function PriceScreen({ list }: { list: PriceList }) {
   return (
-    <Screen id={list.id} eyebrow={list.eyebrow} title={list.title} intro={list.intro}>
+    <Screen id={list.id} title={emphasise(list.title, list.emphasis)} intro={list.intro}>
       <table className="prices" data-testid={`prices-${list.id}`}>
         <caption className="sr-only">
           {list.title} prices and Real Coder’s commission, AUD excluding GST

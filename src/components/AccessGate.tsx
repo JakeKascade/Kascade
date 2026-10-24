@@ -20,7 +20,7 @@ export default function AccessGate({ length }: { length: number }) {
     if (response?.ok) {
       setStatus("open");
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      setTimeout(() => window.location.replace("/"), reduce ? 0 : 900);
+      setTimeout(() => window.location.replace(window.location.href), reduce ? 0 : 900);
       return;
     }
     setStatus(response?.status === 429 ? "locked" : "wrong");

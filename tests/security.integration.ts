@@ -52,7 +52,7 @@ test("production asks for the access code, never sends the proposal before it, a
     assert.equal(gate.headers.get("x-frame-options"), "DENY");
     const gateHtml = await gate.text();
     assert.match(gateHtml, /Enter your access code/);
-    assert.doesNotMatch(gateHtml, /Calculate your earnings/, "proposal must not be sent before the code");
+    assert.doesNotMatch(gateHtml, /id="calculator"/, "proposal must not be sent before the code");
     assert.doesNotMatch(gateHtml, new RegExp(CODE), "the code itself never reaches the browser");
     assert.equal((await post(base, "0000")).status, 401);
     assert.equal((await post(base, "2026")).status, 401, "the development code doesn't work in production");
@@ -71,7 +71,7 @@ test("production asks for the access code, never sends the proposal before it, a
     const home = await fetch(base, { headers: { cookie: cookie.split(";")[0] } });
     assert.equal(home.status, 200);
     const html = await home.text();
-    assert.match(html, /Who does what/);
+    assert.match(html, /id="calculator"/);
     assert.doesNotMatch(html, /ELITA/i);
     assert.doesNotMatch(logs(), new RegExp(CODE), "the code is never logged");
   } finally {

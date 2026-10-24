@@ -26,8 +26,9 @@ export type PriceRow = {
 
 export type PriceList = {
   id: "branding" | "real-estate" | "ongoing";
-  eyebrow: string;
   title: string;
+  /** The one word or phrase of the title set in the serif. */
+  emphasis: string;
   intro: string;
   billing: "once" | "monthly";
   rows: PriceRow[];
@@ -52,8 +53,8 @@ const listings = (id: ServiceId) => {
 export const PRICE_LISTS: readonly PriceList[] = [
   {
     id: "branding",
-    eyebrow: "Service A · One-off projects",
     title: "Branding & Identity",
+    emphasis: "&",
     intro: "Logos and brand identities for new or growing businesses.",
     billing: "once",
     rows: [
@@ -98,8 +99,8 @@ export const PRICE_LISTS: readonly PriceList[] = [
   },
   {
     id: "real-estate",
-    eyebrow: "Service B · Monthly packages",
     title: "Real Estate Campaign Retainers",
+    emphasis: "Real Estate",
     intro: `Standard agency deliverables for every listing: ${REAL_ESTATE_SCOPE.summary.charAt(0).toLowerCase()}${REAL_ESTATE_SCOPE.summary.slice(1)}`,
     billing: "monthly",
     rows: [
@@ -135,9 +136,9 @@ export const PRICE_LISTS: readonly PriceList[] = [
   },
   {
     id: "ongoing",
-    eyebrow: "Service C · Monthly packages",
     title: "Ongoing Design Retainers",
-    intro: "A monthly design team for businesses outside real estate.",
+    emphasis: "Ongoing",
+    intro: "An embedded design department for businesses outside real estate, by the month.",
     billing: "monthly",
     rows: (["essential", "creativeGrowth", "embedded"] as const).map((id) => ({
       key: id,

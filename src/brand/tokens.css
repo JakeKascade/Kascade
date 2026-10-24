@@ -1,28 +1,38 @@
 /*
  * Design tokens — the only place colour, type and shape are defined.
- * Interim dark foundation for the working draft; the Kascade branding pass
- * replaces these values (and src/brand/fonts.ts) without touching components.
+ * Kascade Studio: warm near-black, cream type, and one sea-glass accent
+ * (water — the cascade that fills the gaps). Swap values here, not in components.
  */
 :root {
   /* Type */
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --font-serif: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-dots: var(--font-doto), var(--font-geist-mono), ui-monospace, monospace;
 
-  /* Surfaces and ink */
-  --bg: #0c0c0c;
-  --surface: #161616;
-  --ink: #f4f3ef;
-  --ink-2: #c4c3bd;
-  --ink-3: #8d8c86;
-  --line: #262624;
-  --line-strong: #3d3c39;
+  /* Surfaces and ink — warm, never pure black or white */
+  --bg: #15130f;
+  --surface: #1c1915;
+  --ink: #f2ede4;
+  --ink-2: #cdc6ba;
+  --ink-3: #928b80;
+  --line: #2b2721;
+  --line-strong: #433d35;
 
-  /* The single accent: Real Coder's earnings and interactive focus */
-  --accent: #9aa6ff;
-  --accent-soft: rgba(154, 166, 255, 0.12);
+  /* The light half of the opening screen, and the type on it */
+  --light: #ece7de;
+  --on-light: #15130f;
+  --on-light-2: #4d483f;
+  --on-light-3: #8a847a;
+
+  /* Sea-glass: the single accent, used sparingly */
+  --accent: #a8d8cc;
+  --accent-deep: #3f6e66;
+  --accent-soft: rgba(168, 216, 204, 0.1);
+  --glow: rgba(168, 216, 204, 0.075);
 
   /* Shape and motion */
-  --radius: 14px;
+  --radius: 4px;
   --header: 60px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 

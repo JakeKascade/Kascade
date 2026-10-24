@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { BRAND } from "@/brand/brand";
-import { mono, sans } from "@/brand/fonts";
+import { dots, mono, sans, serif } from "@/brand/fonts";
 import "@/brand/tokens.css";
 import "./globals.css";
 
@@ -10,13 +10,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 export const viewport: Viewport = {
-  themeColor: "#0c0c0c",
+  themeColor: "#15130f",
 };
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-AU" className={`${sans.variable} ${mono.variable}`}>
+    <html lang="en-AU" className={`${sans.variable} ${mono.variable} ${serif.variable} ${dots.variable}`}>
       <body>{children}</body>
     </html>
   );

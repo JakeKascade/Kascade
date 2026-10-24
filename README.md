@@ -10,8 +10,9 @@ An interactive partnership proposal for Matt and Sam at Real Coder: Kascade’s 
 - A typed service catalogue — the single source for every price, allowance and term: [`src/data/catalog.ts`](src/data/catalog.ts) — and one price-list format for all services: [`src/data/pricing.ts`](src/data/pricing.ts).
 - A pure, deterministic referral model in integer cents: [`src/lib/referral-model.ts`](src/lib/referral-model.ts), with the calculator’s scenario layer in [`src/lib/scenario.ts`](src/lib/scenario.ts).
 - A simple earnings calculator: number of clients per package → Real Coder’s commission over 12 months.
+- A typography study at `/type` for choosing the final type (8 sans, 6 serifs, numerals, pairings and a live tester).
 - An access-code screen (a sharing deterrent, not authentication).
-- A replaceable interim visual foundation; branding is deliberately deferred.
+- The Kascade brand direction: warm dark, cream, one sea-glass accent, and a pixel-field opening screen. Logo to come.
 
 ## Documentation
 

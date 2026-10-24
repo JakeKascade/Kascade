@@ -4,7 +4,7 @@ import type { ServiceId } from "@/data/catalog";
 import { CAP_MONTHS, PRICE_LISTS } from "@/data/pricing";
 import { money } from "@/lib/format";
 import { countsScenario, run, type Counts } from "@/lib/scenario";
-import { Money, Screen, Stepper } from "../Primitives";
+import { Frame, Money, Screen, Stepper, emphasise } from "../Primitives";
 
 const MAX = 20;
 const START: Counts = { professional: 1, reGrowth: 1 };
@@ -16,8 +16,7 @@ export default function Calculator() {
   return (
     <Screen
       id="calculator"
-      eyebrow="Calculator"
-      title="Calculate your earnings"
+      title={emphasise("Calculate your earnings", "earnings")}
       intro="Choose how many clients you might refer in a year."
     >
       <div className="calc">
@@ -49,7 +48,8 @@ export default function Calculator() {
             </div>
           ))}
         </div>
-        <div className="calc-result" aria-live="polite" aria-atomic="true">
+        <Frame className="calc-result">
+          <div aria-live="polite" aria-atomic="true">
           <p className="result-label">Real Coder earns over {CAP_MONTHS} months</p>
           <Money cents={totals.totalCommission} className="result-total" testId="total" />
           <dl className="result-split">
@@ -71,7 +71,8 @@ export default function Calculator() {
             stay for {CAP_MONTHS} months. Excludes GST. An illustration, not a
             forecast.
           </p>
-        </div>
+          </div>
+        </Frame>
       </div>
     </Screen>
   );
