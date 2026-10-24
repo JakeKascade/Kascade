@@ -12,18 +12,22 @@ const SCREENS = ["top", "roles", "gains", "branding", "real-estate", "ongoing", 
 async function open(page: Page, hash = "") {
   const unlocked = await page.request.post("/api/access", { data: { code: DEV_CODE } });
   expect(unlocked.ok()).toBe(true);
-  await page.goto(`/${hash}`);
+  await page.goto(`/real-coder${hash}`);
   await expect(page.locator("html")).toHaveAttribute("data-ready", "true");
 }
 const noHorizontalScroll = (page: Page) =>
   page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1);
 
 test("the access screen guards the proposal and unlocks with the code", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/real-coder");
   await expect(page.getByRole("heading", { name: "Enter your access code" })).toBeVisible();
   await expect(page.locator("#calculator")).toHaveCount(0);
   await page.locator("#access-code").fill(DEV_CODE);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Kascade Studio", { timeout: 10_000 });
+  await expect(page).toHaveURL(/\/real-coder$/);
+  // The bare address forwards to the proposal once unlocked.
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/real-coder$/);
 });
 
 test("every screen renders, dark, with one clear heading and no runtime errors", async ({ page }, info) => {
