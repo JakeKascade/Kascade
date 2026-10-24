@@ -90,7 +90,7 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
           if (narrow) {
             // A skyline in whole cells: each column's top wanders a few rows
             // around a line midway between the text and the bottom.
-            const base = cy1 + 3 + (rows - cy1 - 3) * 0.32;
+            const base = cy1 + 3 + (rows - cy1 - 3) * 0.2;
             const top =
               base +
               (noise(x * 0.45 + 3, 0.5) - 0.5) * 8 +

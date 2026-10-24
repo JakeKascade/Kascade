@@ -142,7 +142,8 @@ li {
 }
 /* Phones only: the jump nav and the logos at the foot of the opening screen. */
 .header-nav,
-.hero-lockup {
+.hero-lockup,
+.hero-cta {
   display: none;
 }
 .lockup-x {
@@ -229,6 +230,35 @@ li {
   /* Out of the way as soon as the reader scrolls; back at the top. */
   [data-scrolled] .hero-lockup {
     opacity: 0;
+  }
+  /* "View proposal": the shared pill, in the opening screen's light colours,
+     arriving just after the reveal. */
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    min-height: 48px;
+    margin-top: 40px;
+    padding: 6px 6px 6px 22px;
+    border: 1px solid rgba(17, 19, 23, 0.18);
+    border-radius: 999px;
+    background: none;
+    font-size: 15px;
+    color: var(--on-light);
+    opacity: 0;
+    transition: opacity 0.6s ease 0.5s;
+  }
+  .screen-hero[data-open] .hero-cta {
+    opacity: 1;
+  }
+  .hero-cta-icon {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--on-light);
+    color: var(--light);
   }
   .hero-lockup .logo {
     height: 18px;
