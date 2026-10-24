@@ -16,15 +16,13 @@ import {
 } from "../src/lib/referral-model";
 import {
   DEFAULT_SETTINGS,
-  PRESETS,
-  matchingPreset,
+  countsScenario,
   newLine,
-  presetScenario,
   run,
   toInput,
   type Scenario,
 } from "../src/lib/scenario";
-import { exportCsv, exportResults } from "../src/lib/export";
+import { PRICE_LISTS } from "../src/data/pricing";
 
 const BPS = REFERRAL_TERMS.defaultFeeBps;
 const price = (id: "basic" | "professional") => {
@@ -61,6 +59,24 @@ const scenario = (lines: Partial<Scenario["lines"][number]>[], settings = {}): S
   lines: lines.map((l) => newLine(l)),
   settings: { ...DEFAULT_SETTINGS, ...settings },
 });
+
+/** Growth agencies starting months 1, 4, 7 and 10, plus two Professional projects. */
+const quarterly = () =>
+  scenario([
+    { service: "reGrowth", startMonth: 1 },
+    { service: "reGrowth", startMonth: 4 },
+    { service: "reGrowth", startMonth: 7 },
+    { service: "reGrowth", startMonth: 10 },
+    { service: "professional", count: 2, startMonth: 3 },
+  ]);
+const mix = () =>
+  scenario([
+    { service: "basic", startMonth: 1 },
+    { service: "basic", startMonth: 6 },
+    { service: "professional", startMonth: 4, strategy: true },
+    { service: "volume", startMonth: 5 },
+    { service: "essential", startMonth: 3 },
+  ]);
 
 test("catalogue holds the commercial master's prices in cents", () => {
   assert.equal(price("basic"), 200_000);
@@ -131,7 +147,7 @@ test("Growth agencies from months 1, 4, 7, 10: 30 client-months, $10,350, $1,380
 });
 
 test("adding two paid Professional projects brings year one to $11,150", () => {
-  const out = run(presetScenario("quarterly"));
+  const out = run(quarterly());
   assert.equal(out.totals.oneOffCommission, 80_000);
   assert.equal(out.totals.recurringCommission, 1_035_000);
   assert.equal(out.totals.totalCommission, 1_115_000);
@@ -237,15 +253,9 @@ test("10+ listing retainers need an entered agreed fee and are never extrapolate
   assert.equal(agreed.totals.totalCommission, 62_000);
 });
 
-test("strategy never applies to retainers and stays inside its $4,000–$6,000 range in presets", () => {
+test("strategy never applies to retainers", () => {
   const r = run(scenario([{ service: "reGrowth", strategy: true, stayMonths: 1 }]));
   assert.equal(r.totals.clientReceipts, 345_000);
-  for (const p of PRESETS)
-    for (const l of p.lines)
-      if (l.strategy) {
-        assert.ok(l.strategyCents >= STRATEGY_ADD_ON.minCents);
-        assert.ok(l.strategyCents <= STRATEGY_ADD_ON.maxCents);
-      }
 });
 
 test("commission rounds half away from zero, per receipt, in whole cents", () => {
@@ -274,48 +284,49 @@ test("invalid inputs are rejected rather than silently modelled", () => {
   );
 });
 
-test("every preset and month reconciles: client payments = commission + Kascade after referral", () => {
-  for (const p of PRESETS) {
+test("every month reconciles: client payments = commission + Kascade after referral", () => {
+  for (const make of [quarterly, mix]) {
     for (const settings of [
       {},
       { projectPayment: "split" as const },
       { horizonMonths: 24 },
       { feeBps: 1250, recurringPeriod: "ongoing" as const },
     ]) {
-      const out = run(presetScenario(p.id, { ...DEFAULT_SETTINGS, ...settings }));
-      assert.ok(reconciles(out), p.id);
+      const s = make();
+      const out = run({ ...s, settings: { ...s.settings, ...settings } });
+      assert.ok(reconciles(out));
       const t = out.totals;
       assert.equal(t.clientReceipts, t.totalCommission + t.kascadeAfterReferral);
       assert.equal(t.totalCommission, out.months.at(-1)!.cumulativeCommission);
       assert.equal(t.clientReceipts, t.oneOffReceipts + t.retainerReceipts);
     }
   }
-});
-
-test("illustrative presets produce the documented totals and are recognised", () => {
-  assert.equal(run(presetScenario("first")).totals.totalCommission, 454_000);
-  assert.equal(run(presetScenario("quarterly")).totals.totalCommission, 1_115_000);
   // 2 × $200 + $900 + 8 × $495 + 10 × $200
-  assert.equal(run(presetScenario("mix")).totals.totalCommission, 726_000);
-  assert.equal(matchingPreset(presetScenario("mix").lines), "mix");
-  const edited = presetScenario("mix");
-  edited.lines[0].count = 2;
-  assert.equal(matchingPreset(edited.lines), null);
+  assert.equal(run(mix()).totals.totalCommission, 726_000);
 });
 
-test("JSON and CSV exports reconcile with the engine", () => {
-  const s = presetScenario("quarterly");
-  const out = run(s);
-  const json = exportResults(s);
-  assert.equal(json.results.totals.totalCommission, out.totals.totalCommission);
-  assert.deepEqual(json.input, toInput(s));
-  const rows = exportCsv(s).trim().split("\n");
-  assert.equal(rows.length, 1 + 12 + 1);
-  const header = rows[0].split(",");
-  const totalIndex = header.indexOf("real_coder_commission_AUD");
-  const sum = rows
-    .slice(1, 13)
-    .reduce((t, r) => t + Math.round(Number(r.split(",")[totalIndex]) * 100), 0);
-  assert.equal(sum, out.totals.totalCommission);
-  assert.match(rows.at(-1)!, /^total,/);
+test("the calculator counts clients from month 1, retainers for 12 paid months", () => {
+  const out = run(countsScenario({ professional: 1, reGrowth: 1, basic: 0 }));
+  assert.equal(out.totals.totalCommission, 454_000);
+  assert.equal(out.totals.oneOffCommission, 40_000);
+  assert.equal(out.totals.endRecurringRunRate, 34_500);
+  assert.equal(out.input.cohorts.length, 1, "zero counts are left out");
+  const many = run(countsScenario({ basic: 3, essential: 2, embedded: 1 }));
+  assert.equal(many.totals.totalCommission, 3 * 20_000 + (2 * 20_000 + 60_000) * 12);
+});
+
+test("every price list row matches the catalogue and calculator rows are fixed-price", () => {
+  const ids = PRICE_LISTS.flatMap((l) => l.rows.filter((r) => r.service).map((r) => r.service!));
+  assert.deepEqual(ids, ["basic", "professional", "boutique", "reGrowth", "volume", "essential", "creativeGrowth", "embedded"]);
+  for (const list of PRICE_LISTS)
+    for (const row of list.rows) {
+      if (!row.service) continue;
+      const s = SERVICES[row.service];
+      assert.equal(row.price, s.billing === "once" ? s.priceCents : s.monthlyCents);
+      assert.equal(row.billing, s.billing);
+    }
+  const strategy = PRICE_LISTS[0].rows.find((r) => r.key === "strategy")!;
+  assert.deepEqual(strategy.price, [STRATEGY_ADD_ON.minCents, STRATEGY_ADD_ON.maxCents]);
+  const agency = PRICE_LISTS[1].rows.find((r) => r.key === "agency")!;
+  assert.equal(agency.price, AGENCY_ADD_ON.monthlyCents);
 });

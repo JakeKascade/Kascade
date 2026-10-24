@@ -1,123 +1,78 @@
 "use client";
-import { REFERRAL_TERMS } from "@/data/catalog";
-import type { SimulationOutput } from "@/lib/referral-model";
-import type { Scenario } from "@/lib/scenario";
-import Builder from "../calculator/Builder";
-import EarningsChart from "../calculator/EarningsChart";
-import MonthTable from "../calculator/MonthTable";
-import Results from "../calculator/Results";
-import { Disclosure, Icon } from "../Primitives";
+import { useMemo, useState } from "react";
+import type { ServiceId } from "@/data/catalog";
+import { CAP_MONTHS, PRICE_LISTS } from "@/data/pricing";
+import { money } from "@/lib/format";
+import { countsScenario, run, type Counts } from "@/lib/scenario";
+import { Money, Screen, Stepper } from "../Primitives";
 
-export const METHOD = [
-  {
-    term: "Signed and paid, not leads",
-    text: "Every input is a client who has signed and paid, or an active retainer client who pays. There are no conversion rates or expected values, so a client is never shown as a fraction.",
-  },
-  {
-    term: "Eligible payment",
-    text: "Money a referred client has actually paid Kascade for eligible creative work, excluding GST and pass-through costs such as print or media. Refunds and credits reduce it.",
-  },
-  {
-    term: "One-off commission",
-    text: "Earned once on each payment received for a branding project, including any strategy add-on attached to it. Deposits and balances each count once; invoiced but unpaid amounts never count.",
-  },
-  {
-    term: "Active paid retainer",
-    text: "A retainer client in a month they pay. A paused or unpaid month earns nothing. No churn is assumed unless you set a shorter stay.",
-  },
-  {
-    term: `First ${REFERRAL_TERMS.proposedMaxPaidRetainerMonths} paid months`,
-    text: `Proposed: recurring commission applies to each retainer client’s first ${REFERRAL_TERMS.proposedMaxPaidRetainerMonths} paid months, then stops even if the client keeps paying. Year-one figures add up the actual paid months; they are never a month-12 figure multiplied by 12.`,
-  },
-  {
-    term: "New listing campaign",
-    text: "Counted once, when Kascade accepts the complete campaign brief. Later stages of the same property’s campaign are included, not counted again.",
-  },
-  {
-    term: "Kascade after commission",
-    text: "Client payments less Real Coder’s commission, before any of Kascade’s delivery, staff or operating costs. It is revenue, not profit.",
-  },
-  {
-    term: "Precision",
-    text: "Whole cents throughout; commission is rounded to the cent on each payment. Screens round to the dollar. Model months are not calendar dates. AUD, excluding GST.",
-  },
-] as const;
+const MAX = 20;
+const START: Counts = { professional: 1, reGrowth: 1 };
 
-export default function Calculator({
-  scenario,
-  output,
-  onChange,
-  onExport,
-  exported,
-}: {
-  scenario: Scenario;
-  output: SimulationOutput;
-  onChange: (s: Scenario) => void;
-  onExport: (format: "json" | "csv") => void;
-  exported: string;
-}) {
+export default function Calculator() {
+  const [counts, setCounts] = useState<Counts>(START);
+  const { totals } = useMemo(() => run(countsScenario(counts)), [counts]);
+  const set = (id: ServiceId, n: number) => setCounts((c) => ({ ...c, [id]: n }));
   return (
-    <section id="calculator" className="panel panel-calc tone-alt" data-group="referrals" aria-labelledby="calc-title">
-      <div className="wrap">
-        <div className="section-head" data-reveal>
-          <div>
-            <p className="index">
-              <span>03 · Calculator</span>Explore the opportunity
-            </p>
-            <h2 id="calc-title" className="section-title">
-              What could the partnership add?
-            </h2>
-          </div>
-          <p className="lead">
-            Add the clients you can picture introducing. Every figure uses the
-            same commission rules. These are illustrations, not projected or
-            guaranteed revenue.
+    <Screen
+      id="calculator"
+      eyebrow="Calculator"
+      title="Calculate your earnings"
+      intro="Choose how many clients you might refer in a year."
+    >
+      <div className="calc">
+        <div className="calc-inputs">
+          {PRICE_LISTS.map((list) => (
+            <div key={list.id} className="calc-group">
+              <h3>{list.title}</h3>
+              <ul>
+                {list.rows
+                  .filter((r) => r.service)
+                  .map((r) => (
+                    <li key={r.key}>
+                      <span className="calc-name">
+                        {r.name}
+                        <small>
+                          {money(r.price as number)}
+                          {r.billing === "monthly" ? " / month" : " one-off"}
+                        </small>
+                      </span>
+                      <Stepper
+                        label={`${list.title}, ${r.name}: clients`}
+                        value={counts[r.service!] ?? 0}
+                        max={MAX}
+                        onChange={(n) => set(r.service!, n)}
+                      />
+                    </li>
+                  ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="calc-result" aria-live="polite" aria-atomic="true">
+          <p className="result-label">Real Coder earns over {CAP_MONTHS} months</p>
+          <Money cents={totals.totalCommission} className="result-total" testId="total" />
+          <dl className="result-split">
+            <div>
+              <dt>From one-off projects</dt>
+              <dd>
+                <Money cents={totals.oneOffCommission} testId="oneoff" />
+              </dd>
+            </div>
+            <div>
+              <dt>From monthly packages</dt>
+              <dd>
+                <Money cents={totals.endRecurringRunRate} testId="monthly" /> / month
+              </dd>
+            </div>
+          </dl>
+          <p className="fine">
+            Assumes every client signs and pays in month 1, and monthly clients
+            stay for {CAP_MONTHS} months. Excludes GST. An illustration, not a
+            forecast.
           </p>
         </div>
-        <div className="calc" data-reveal>
-          {/* Phones: result, then the builder, then the chart. Wider: builder beside both. */}
-          <div className="calc-total">
-            <Results output={output} settings={scenario.settings} />
-          </div>
-          <div className="calc-builder module">
-            <Builder scenario={scenario} onChange={onChange} />
-          </div>
-          <div className="calc-chart">
-            <EarningsChart output={output} />
-          </div>
-        </div>
-        <div className="calc-more" data-reveal>
-          <Disclosure label="Month-by-month breakdown" className="details">
-            <MonthTable output={output} />
-          </Disclosure>
-          <Disclosure label="How the numbers work" className="details">
-            <dl className="method">
-              {METHOD.map((m) => (
-                <div key={m.term}>
-                  <dt>{m.term}</dt>
-                  <dd>{m.text}</dd>
-                </div>
-              ))}
-            </dl>
-            <p className="fine">
-              Hypothetical scenarios only. Nothing here guarantees introductions,
-              conversions, client retention or earnings.
-            </p>
-          </Disclosure>
-          <div className="exports">
-            <p className="fine">Take this scenario with you, in exact cents:</p>
-            <button type="button" className="text-button" onClick={() => onExport("json")}>
-              <Icon name="download" size={14} /> Scenario JSON
-            </button>
-            <button type="button" className="text-button" onClick={() => onExport("csv")}>
-              <Icon name="download" size={14} /> Monthly CSV
-            </button>
-            <p className="export-status" role="status">
-              {exported}
-            </p>
-          </div>
-        </div>
       </div>
-    </section>
+    </Screen>
   );
 }

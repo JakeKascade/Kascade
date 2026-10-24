@@ -39,13 +39,9 @@ export default function AccessGate({ length }: { length: number }) {
 
   return (
     <main
-      className="gate tone-ink"
+      className="gate"
       data-status={status === "locked" ? "wrong" : status}
     >
-      <svg className="gate-motif" viewBox="0 0 400 240" aria-hidden="true">
-        <circle cx="160" cy="120" r="96" />
-        <circle cx="240" cy="120" r="96" />
-      </svg>
       <div className="gate-content">
         <p className="gate-lockup">
           <Wordmark />

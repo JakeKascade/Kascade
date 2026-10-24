@@ -1,6 +1,6 @@
 # Referral model — methodology (v1.0)
 
-`src/lib/referral-model.ts` is a pure function: `simulate(input) → { months, totals, assumptions }`. No dates, randomness or I/O. Every screen figure, the chart, the month table, the header summary, the drawer and both exports come from the same call, so they always reconcile.
+`src/lib/referral-model.ts` is a pure function: `simulate(input) → { months, totals, assumptions }`. No dates, randomness or I/O. Every figure on the page — price lists, worked examples and the calculator — comes from the catalogue and this engine, so they always reconcile.
 
 ## Units and sources
 
@@ -40,7 +40,7 @@ Totals add the end-of-horizon recurring run rate, paid and commissioned client-m
 
 ## Reconciliation
 
-For every month: `clientReceipts = totalCommission + kascadeAfterReferral` and `totalCommission = oneOff + recurring`. `reconciles(output)` checks this, and the tests run it across every preset and setting combination.
+For every month: `clientReceipts = totalCommission + kascadeAfterReferral` and `totalCommission = oneOff + recurring`. `reconciles(output)` checks this, and the tests run it across several scenarios and settings.
 
 ## Worked examples (all in `tests/referral-model.test.ts`)
 
@@ -56,15 +56,9 @@ For every month: `clientReceipts = totalCommission + kascadeAfterReferral` and `
 | $2,000 paid, then $500 refunded | +$200, then −$50 → $150 |
 | Growth retainer over a 24-month view | $4,140 — commission stops after 12 paid months while the client keeps paying |
 
-## Illustrative presets
+## The calculator on the page
 
-| Preset | Lines | Year-one commission |
-|---|---|---|
-| One agency, one brand (default) | Growth agency from month 1; Professional paid month 2 | $4,540 |
-| An agency each quarter | Growth agencies months 1, 4, 7, 10; two Professional projects month 3 | $11,150 |
-| A broader mix | Basic months 1 and 6; Professional + strategy month 4; Volume agency from month 5; Essential creative from month 3 | $7,260 |
-
-These are illustrations chosen to show the mechanics, not targets or forecasts. Their assumptions are the lines themselves, shown in full in the calculator.
+The calculator asks only how many clients of each fixed-price package Real Coder might refer. It assumes every client signs and pays in month 1 and that monthly clients pay for all 12 months, then runs the same engine (`countsScenario` in `src/lib/scenario.ts`). The headline is total commission over 12 months; beneath it are one-off commission and the monthly figure. These assumptions are stated under the result.
 
 ## Limitations
 
