@@ -1,34 +1,38 @@
 /*
  * Design tokens — the only place colour, type and shape are defined.
- * Monochrome: black, white and greys. Emphasis is white against grey.
- * --brand is the single slot for a future brand colour (currently white).
+ * Blue-grey charcoal with soft gradients and grain; type in white and grey;
+ * one colour, --brand, reserved for Real Coder's earnings.
  */
 :root {
   /* Type */
   --font-sans: var(--font-inter-tight), "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  /* Dark surfaces and type */
-  --bg: #000000;
-  --surface: #111111;
-  --surface-2: #1a1a1a;
-  --ink: #ffffff;
-  /* Grey for the quieter half of two-tone text and small details (6:1 on black) */
-  --mute: #8f8f8f;
-  --line: #1f1f1f;
-  --line-strong: #333333;
+  /* Surfaces: blue-black charcoal, two close shades for alternating screens */
+  --bg: #111317;
+  --bg-2: #15181d;
+  --ink: #f2f4f6;
+  /* Grey for the quieter half of two-tone text and small details */
+  --mute: #8a919a;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --card: linear-gradient(160deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02));
+  /* Soft blue light in the background of each screen */
+  --glow: rgba(96, 132, 176, 0.22);
 
-  /* The light half of the opening screen, and light cards */
-  --light: #efefef;
-  --on-light: #000000;
-  --on-light-mute: #6b6b6b;
+  /* The light half of the opening screen */
+  --light: #e6e9ed;
+  --on-light: #111317;
+  --on-light-mute: #626973;
 
-  /* Brand colour slot: Real Coder's earnings and focus. Change here only. */
-  --brand: #ffffff;
+  /* Real Coder's earnings: steel blue. Alternatives in docs/BRAND.md. */
+  --brand: #8db4e2;
+  --brand-deep: #5d84b3;
+  --on-brand: #0d1116;
 
   /* Shape and motion */
-  --radius: 24px;
-  --radius-sm: 12px;
-  --header: 60px;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --header: 64px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 
   color-scheme: dark;

@@ -1,13 +1,16 @@
 /**
- * Brand and identity placeholders. The Kascade visual identity for this
- * proposal is deliberately deferred: replace these values, the wordmark
- * component and src/brand/tokens.css in the branding pass. Nothing else in the
- * page should need to change.
+ * Names, copy constants and logo files. Colours and type live in
+ * src/brand/tokens.css and src/brand/fonts.ts.
  */
 export const BRAND = {
   studio: "Kascade Studio",
-  /** Shown in the placeholder wordmark. */
-  wordmark: { primary: "Kascade", secondary: "Studio" },
+  /** Supplied logo lockups (viewBox 949.79 × 170.95). */
+  logo: {
+    white: "/brand/kascade-logo-white.svg",
+    black: "/brand/kascade-logo-black.svg",
+    width: 950,
+    height: 171,
+  },
   partner: "Real Coder",
   /** The people the proposal is written for. */
   audience: "Matt and Sam",

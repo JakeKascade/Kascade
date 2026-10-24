@@ -8,6 +8,7 @@ No eyebrows: each screen has one heading that says exactly what it is.
 |---|---|---|
 | 1 | Kascade Studio × Real Coder | Your clients’ design department: you introduce, we do the work, you earn 10% |
 | 2 | Who does what | Real Coder keeps web/SEO/technical; Kascade only does design |
+| 2b | What everyone gains | Three overlapping circles: Real Coder, your clients, Kascade — one line each |
 | 3 | Branding & Identity | Price list |
 | 4 | Real Estate Campaign Retainers | Price list |
 | 5 | Ongoing Design Retainers | Price list |

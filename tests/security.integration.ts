@@ -54,6 +54,10 @@ test("production asks for the access code, never sends the proposal before it, a
     assert.match(gateHtml, /Enter your access code/);
     assert.doesNotMatch(gateHtml, /id="calculator"/, "proposal must not be sent before the code");
     assert.doesNotMatch(gateHtml, new RegExp(CODE), "the code itself never reaches the browser");
+    // The logo is public, so it shows on the access screen.
+    const logo = await fetch(base + "/brand/kascade-logo-white.svg");
+    assert.equal(logo.status, 200);
+    assert.match(logo.headers.get("content-type") || "", /svg/);
     assert.equal((await post(base, "0000")).status, 401);
     assert.equal((await post(base, "2026")).status, 401, "the development code doesn't work in production");
     const unlocked = await post(base, CODE);
