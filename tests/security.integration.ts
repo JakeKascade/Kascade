@@ -3,43 +3,89 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
 
-test("production presentation opens without a username or password and retains noindex headers", async () => {
-  const env: NodeJS.ProcessEnv = {
-    ...process.env,
-    NODE_ENV: "production",
-    NEXT_TELEMETRY_DISABLED: "1",
-  };
-  delete env.ELITA_ACCESS_PASSWORD;
-  delete env.ELITA_ACCESS_USER;
-  const port = 3101;
-  const child = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "--hostname", "127.0.0.1", "--port", String(port)], {
-    cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe"],
-  });
+const CODE = "4826";
+
+/** Starts the production build; resolves once it answers. */
+async function start(port: number, env: NodeJS.ProcessEnv) {
+  const child = spawn(
+    process.execPath,
+    ["node_modules/next/dist/bin/next", "start", "--hostname", "127.0.0.1", "--port", String(port)],
+    { cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe"] },
+  );
   let logs = "";
-  child.stdout.on("data", b => { logs += b.toString(); });
-  child.stderr.on("data", b => { logs += b.toString(); });
+  child.stdout.on("data", (b) => (logs += b.toString()));
+  child.stderr.on("data", (b) => (logs += b.toString()));
   const base = `http://127.0.0.1:${port}`;
+  for (let i = 0; i < 150; i++) {
+    if (child.exitCode !== null) throw new Error(`Production server exited: ${logs}`);
+    try {
+      await fetch(base + "/access");
+      return { child, base, logs: () => logs };
+    } catch {
+      await new Promise((resolve) => setTimeout(resolve, 100));
+    }
+  }
+  throw new Error("Production server did not start");
+}
+async function stop(child: ReturnType<typeof spawn>) {
+  child.kill("SIGTERM");
+  if (child.exitCode === null) await once(child, "exit");
+}
+const baseEnv = (): NodeJS.ProcessEnv => {
+  const env: NodeJS.ProcessEnv = { ...process.env, NODE_ENV: "production", NEXT_TELEMETRY_DISABLED: "1" };
+  delete env.KASCADE_ACCESS_CODE;
+  return env;
+};
+const post = (base: string, code: string, address?: string) =>
+  fetch(base + "/api/access", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...(address ? { "x-forwarded-for": address } : {}) },
+    body: JSON.stringify({ code }),
+  });
+
+test("production asks for the access code, never sends the proposal before it, and keeps noindex headers", async () => {
+  const { child, base, logs } = await start(3101, { ...baseEnv(), KASCADE_ACCESS_CODE: CODE });
   try {
-    let ready = false;
-    for (let i = 0; i < 100; i++) {
-      if (child.exitCode !== null) throw new Error(`Production server exited: ${logs}`);
-      try { await fetch(base); ready = true; break; } catch { await new Promise(resolve => setTimeout(resolve, 100)); }
-    }
-    assert.ok(ready, "Production server must start");
-    const home = await fetch(base);
+    const gate = await fetch(base);
+    assert.equal(gate.status, 200);
+    assert.match(gate.headers.get("x-robots-tag") || "", /noindex/);
+    assert.equal(gate.headers.get("x-frame-options"), "DENY");
+    const gateHtml = await gate.text();
+    assert.match(gateHtml, /Enter your access code/);
+    assert.doesNotMatch(gateHtml, /What could the partnership add/, "proposal must not be sent before the code");
+    assert.doesNotMatch(gateHtml, new RegExp(CODE), "the code itself never reaches the browser");
+    assert.equal((await post(base, "0000")).status, 401);
+    assert.equal((await post(base, "2026")).status, 401, "the development code doesn't work in production");
+    const unlocked = await post(base, CODE);
+    assert.equal(unlocked.status, 200);
+    const cookie = unlocked.headers.get("set-cookie") || "";
+    assert.match(cookie, /kascade_proposal_access=[0-9a-f]{64}/);
+    assert.match(cookie, /HttpOnly/i);
+    assert.match(cookie, /Secure/i);
+    assert.doesNotMatch(cookie, new RegExp(`=${CODE}`));
+    // Repeated wrong codes from one address lock it out, even for the right
+    // code, while other addresses are unaffected.
+    for (let i = 0; i < 5; i++) assert.equal((await post(base, "0000", "203.0.113.9")).status, 401);
+    assert.equal((await post(base, CODE, "203.0.113.9")).status, 429);
+    assert.equal((await post(base, CODE, "203.0.113.10")).status, 200);
+    const home = await fetch(base, { headers: { cookie: cookie.split(";")[0] } });
     assert.equal(home.status, 200);
-    assert.equal(home.headers.get("www-authenticate"), null);
-    assert.match(home.headers.get("x-robots-tag") || "", /noindex/);
-    assert.equal(home.headers.get("x-frame-options"), "DENY");
-    assert.match(await home.text(), /A potential/i);
-    const logo = await fetch(base + "/brand/elita-logo.png");
-    assert.equal(logo.status, 200);
-    for (const path of ["/brand/Unica77LLTT-Regular.ttf", "/brand/Unica77LLTT-Light.ttf", "/brand/Optician-Sans.otf"]) {
-      const res = await fetch(base + path);
-      assert.equal(res.status, 200, path + " must load approved ELITA brand fonts");
-    }
+    const html = await home.text();
+    assert.match(html, /More value for your clients/);
+    assert.doesNotMatch(html, /ELITA/i);
+    assert.doesNotMatch(logs(), new RegExp(CODE), "the code is never logged");
   } finally {
-    child.kill("SIGTERM");
-    if (child.exitCode === null) await once(child, "exit");
+    await stop(child);
+  }
+});
+
+test("production with no configured code fails closed", async () => {
+  const { child, base } = await start(3102, baseEnv());
+  try {
+    assert.match(await (await fetch(base)).text(), /Enter your access code/);
+    assert.equal((await post(base, "2026")).status, 401);
+    assert.equal((await post(base, "")).status, 401);
+  } finally {
+    await stop(child);
   }
 });

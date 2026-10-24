@@ -1,22 +1,20 @@
-# ELITA — Vercel Deployment
+# Deployment
 
-The project is deployed from the private GitHub repository `JakeKascade/elita-capital-simulator`, production branch `main`, under the separate Vercel project `elita-capital-simulator`.
+**Not deployed.** Do not deploy to production. A preview deployment may be prepared only with Jake’s explicit approval, and only after Callum’s commercial review.
 
-- Framework: Next.js; Node.js 24.x; root `.`
-- Install: `npm ci`; build: `npm run build`
-- Site address: https://elita-capital-simulator.vercel.app
-- **Public, link-accessible application:** there is no application username, password, login or required access environment variable.
-- `ELITA_ACCESS_PASSWORD` and `ELITA_ACCESS_USER` are obsolete and may be deleted from Vercel settings.
-- Search crawlers are discouraged by noindex/nofollow headers and metadata. This is **not** private access: anyone with the URL can open the proposal. Avoid including live deal or customer data.
+When approved:
 
-## Brand assets
-The official ELITA logo and original supplied Optician Sans and Unica77 typography are retained. The site owner has confirmed approval to use the supplied fonts on the web. The original font files are served as public assets so browsers can load the branded typography.
+- Create a **new, separate** Vercel project for this repository (`JakeKascade/Kascade`). Never reuse or redeploy the ELITA project.
+- Framework Next.js, Node 24.x, root `.`; install `npm ci`, build `npm run build` (already in `vercel.json`).
+- Set `KASCADE_ACCESS_CODE` (digits) in the project’s environment variables. Without it, the production site stays locked for everyone. Never commit the value or paste it into issues or logs.
+- Headers already set: `noindex, nofollow, noarchive`, `X-Frame-Options: DENY`, `Referrer-Policy: no-referrer`, `Cache-Control: private, no-store`.
 
-## Verification
-After the main-branch deployment completes:
-1. Open the homepage in a fresh private/incognito browser window. The presentation must load without a username or password.
-2. Check controls, graphs, payout calculations, export and mobile layout.
-3. Verify /brand/elita-logo.png and the supplied Optician Sans and Unica77 webfont paths load successfully (200).
-4. Check noindex, frame-denial and no-referrer headers.
+## About the access code
 
-No production environment keys, database or external APIs are required to calculate the simulator's hypothetical projections.
+The code screen keeps the proposal from being sent to anyone without the code: the page HTML is never served before it’s entered, the browser only holds a hash in an httpOnly cookie, and repeated wrong guesses from one address are slowed and then refused for ten minutes. It is a sharing deterrent, not enterprise authentication — anyone given the code and link can open and share it.
+
+## After a preview deploy
+
+1. Open in a private window: the code screen appears; the proposal does not.
+2. Enter the code; check every panel, the calculator, the Scenario drawer, exports and print.
+3. Check on a phone, and the headers above.
