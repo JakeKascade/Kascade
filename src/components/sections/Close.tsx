@@ -4,12 +4,13 @@ import { Screen, tone } from "../Primitives";
 
 const TERMS = [
   "10% of every payment a referred client makes, excluding GST.",
-  `On monthly packages, 10% for each client’s first ${REFERRAL_TERMS.proposedMaxPaidRetainerMonths} paid months.`,
+  "On monthly packages, 10% of every payment for as long as the client stays.",
   `Paid within ${REFERRAL_TERMS.paymentDaysAfterMonthEnd} days of the end of the month the client pays.`,
   "The client agrees to the introduction, and we both record it.",
   `An introduction is protected for ${REFERRAL_TERMS.registrationProtectionMonths} months.`,
   "No quotas and no exclusivity. Each team keeps its own clients and work.",
-  "It works both ways: Kascade refers web and SEO work to Real Coder.",
+  "The same both ways: Kascade earns 10% on SEO retainers it refers to Real Coder, while they stay active.",
+  "Optional cross-promotion of each other’s services.",
 ];
 
 export function Terms() {
@@ -21,9 +22,8 @@ export function Terms() {
         ))}
       </ol>
       <p className="discuss">
-        <strong>To agree together:</strong> your proposal offers ongoing
-        commission on SEO retainers; ours offers {REFERRAL_TERMS.proposedMaxPaidRetainerMonths} months
-        on monthly design packages. Let’s settle on one approach.
+        <strong>Matched to your proposal:</strong> the same 10%, on the same
+        ongoing basis, in both directions.
       </p>
       <p className="fine">
         Proposed terms only, subject to a written agreement between {BRAND.studio} and {BRAND.partner}.
@@ -40,7 +40,7 @@ const NEXT = [
 
 export function NextSteps() {
   return (
-    <Screen id="next" title={tone("**Next** steps")}>
+    <Screen id="next" centered title={tone("**Next** steps")}>
       <ol className="next">
         {NEXT.map((n, i) => (
           <li key={n}>

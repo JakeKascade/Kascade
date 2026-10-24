@@ -1,5 +1,5 @@
 import { REFERRAL_TERMS, SERVICES, type ServiceId } from "@/data/catalog";
-import { CAP_MONTHS, RATE_BPS } from "@/data/pricing";
+import { RATE_BPS } from "@/data/pricing";
 import { money } from "@/lib/format";
 import { commissionOn, retainerCommissionOver } from "@/lib/referral-model";
 import { Card, Screen, tone } from "../Primitives";
@@ -54,7 +54,7 @@ function Example({ id, label }: { id: ServiceId; label: string }) {
           </dd>
           {monthly && (
             <small>
-              {money(retainerCommissionOver(paid, CAP_MONTHS, RATE_BPS))} over the first {CAP_MONTHS} paid months
+              {money(retainerCommissionOver(paid, 12, RATE_BPS))} a year, for as long as the client stays
             </small>
           )}
         </div>
@@ -66,7 +66,7 @@ function Example({ id, label }: { id: ServiceId; label: string }) {
 
 export default function Referrals() {
   return (
-    <Screen id="referrals" title={tone("**How referrals** work")}>
+    <Screen id="referrals" centered title={tone("**How referrals** work")}>
       <ol className="steps">
         {STEPS.map((s, i) => (
           <li key={s.title}>

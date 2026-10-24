@@ -81,15 +81,21 @@ export function Screen({
   intro,
   children,
   className = "",
+  centered = false,
 }: {
   id: string;
+  centered?: boolean;
   title: ReactNode;
   intro?: ReactNode;
   children?: ReactNode;
   className?: string;
 }) {
   return (
-    <section id={id} className={`screen ${className}`} aria-labelledby={`${id}-title`}>
+    <section
+      id={id}
+      className={`screen ${centered ? "screen-centered" : ""} ${className}`}
+      aria-labelledby={`${id}-title`}
+    >
       <div className="wrap">
         <header className="screen-head">
           <h2 id={`${id}-title`} className="title">

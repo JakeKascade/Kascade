@@ -25,7 +25,7 @@ The calculator’s lines (`ReferralLine`) translate into these: a branding line 
 3. **Strategy attaches to its project.** It adds to that deal’s value and receipts; it is never a second deal and never applies to retainers.
 4. **Agency add-on only when selected**, and only on real estate retainers.
 5. **10+ listing retainers need an entered agreed fee.** Without one the line is excluded and flagged; nothing is extrapolated from the published tiers.
-6. **Recurring commission applies to each client’s first 12 paid months** (proposed). After that the client may keep paying — those receipts count as client payments and Kascade revenue, but earn no commission.
+6. **Recurring commission applies to every paid month while the client stays** (matched to Real Coder’s proposal). A 12-paid-month cap remains available as a comparison setting (`recurringPeriod: "capped"`); under it, later receipts count as client payments and Kascade revenue but earn no commission.
 7. **Unpaid, late or cancelled months earn nothing.** No churn is assumed unless a shorter stay is entered.
 8. **Year-one totals add actual paid months.** They are never the month-12 run rate × 12.
 9. **Payments after the horizon aren’t counted** (e.g. a balance due in month 13) and are disclosed.
@@ -54,7 +54,7 @@ For every month: `clientReceipts = totalCommission + kascadeAfterReferral` and `
 | …plus two paid Professional projects | $11,310 |
 | Boutique paid months 1–3 and 6 only | $195 in those four months, $0 otherwise |
 | $2,000 paid, then $500 refunded | +$200, then −$50 → $150 |
-| Growth retainer over a 24-month view | $4,140 — commission stops after 12 paid months while the client keeps paying |
+| Growth retainer over a 24-month view | $8,280 while the client stays; $4,140 under the capped comparison |
 
 ## The calculator on the page
 

@@ -11,7 +11,7 @@ Everything below appears on the page as *proposed* or *provisional*, or is kept 
 - [ ] Three-month minimum; quarterly volume reconciliation — **not offered on the page**.
 - [ ] Agency Marketing Creative +$1,250 for 10 hours (marked *Provisional*).
 - [ ] Ongoing design retainers: $1,800 / $3,250 / $4,200 for 12 / 26 / 42 hours ($150 / $125 / $100 an hour). Growth’s $3,250 was set between the two rates — confirm.
-- [ ] 10% on projects; 10% on the **first 12 paid months** of retainers vs Real Coder’s ongoing-commission model (named openly under “To agree together”).
+- [ ] 10% on projects and on retainers **for as long as the client stays** — now matched to Real Coder’s proposal (was a 12-paid-month cap). Confirm the margin works.
 - [ ] Payment within 14 days of month end; six-month registration protection; 90-day pilot.
 - [ ] Treatment of upgrades, variations, pauses, cancellations, reactivations and retrospective leads (listed as open).
 - [ ] Portfolio examples and Botwright permissions — no imagery is used yet.
@@ -21,7 +21,7 @@ Everything below appears on the page as *proposed* or *provisional*, or is kept 
 ## Content to double-check
 
 - Real Coder is described only generically (websites, SEO/AEO, hosting and site care, technical delivery).
-- Term 7 says “It works both ways: Kascade refers web and SEO work to Real Coder.” The commission on those referrals is still Real Coder’s proposal, not agreed.
+- Terms 7–8 mirror Real Coder’s proposal: Kascade earns 10% on SEO retainers it refers while they stay active, plus optional cross-promotion. Still subject to a written agreement.
 
 ## Test report (this branch)
 

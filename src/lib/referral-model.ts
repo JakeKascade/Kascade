@@ -4,8 +4,8 @@
  *
  * Every amount is integer AUD cents, excluding GST. Commission accrues only on
  * money a client has actually paid, rounded to the cent on each receipt.
- * Retainer commission is limited to each client's first N paid months
- * (12 proposed). Nothing here is profit: Kascade amounts are receipts before
+ * Retainer commission runs for every paid month while the client stays
+ * (matching Real Coder's proposal); a cap can be modelled for comparison. Nothing here is profit: Kascade amounts are receipts before
  * delivery, staff and operating costs. See docs/MODEL.md.
  */
 import {
@@ -111,12 +111,12 @@ export function commissionOn(amountCents: number, feeBps: number): number {
   return sign * Math.round((Math.abs(amountCents) * feeBps) / 10_000);
 }
 
-/** Commission over a retainer's first paid months (capped by the proposed period). */
+/** Commission over a retainer's paid months (optionally capped). */
 export function retainerCommissionOver(
   monthlyFeeCents: number,
   paidMonths: number,
   feeBps: number = REFERRAL_TERMS.defaultFeeBps,
-  cap: number | null = REFERRAL_TERMS.proposedMaxPaidRetainerMonths,
+  cap: number | null = REFERRAL_TERMS.retainerCommissionMonths,
 ) {
   const months = cap === null ? paidMonths : Math.min(paidMonths, cap);
   return commissionOn(monthlyFeeCents, feeBps) * months;
@@ -265,8 +265,8 @@ export function simulate(input: SimulationInput): SimulationOutput {
       "Inputs are signed and paid projects, and active paid retainers — not leads.",
       `Commission is ${feeBps / 100}% of each eligible client payment, rounded to the cent per payment.`,
       cap === null
-        ? "Retainer commission continues for every paid month (comparison only, not the proposal)."
-        : `Retainer commission applies to each client’s first ${cap} paid months only.`,
+        ? "Retainer commission applies to every paid month while the client stays (as in Real Coder’s proposal)."
+        : `Retainer commission is capped at each client’s first ${cap} paid months (comparison only).`,
       "No churn is assumed unless a shorter stay is entered. Unpaid months earn nothing.",
       "All amounts are AUD, excluding GST, before Kascade’s delivery and operating costs.",
       "Illustrative only: not a forecast, target or guarantee.",

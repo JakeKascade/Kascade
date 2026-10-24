@@ -129,7 +129,7 @@ li {
 /* Header: logo and two small details. It blends with what's behind it, so it
    reads dark on the light opening screen and light on the dark page. */
 .site-header {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -192,15 +192,35 @@ li {
   padding-block: clamp(80px, 12vh, 140px);
   background:
     radial-gradient(55% 65% at var(--gx, 100%) var(--gy, 0%), var(--glow), transparent 72%),
-    var(--bg);
+    var(--bg-2);
   scroll-snap-align: start;
 }
+/* Even screens use the base colour, so "Who does what" continues straight on
+   from the bottom of the pixel field, with its light low in the far corner. */
 .screen:nth-of-type(even) {
   --gx: 0%;
   --gy: 100%;
   background:
     radial-gradient(55% 65% at var(--gx) var(--gy), var(--glow), transparent 72%),
-    var(--bg-2);
+    var(--bg);
+}
+/* "Who does what" reads as the continuation of the opening screen. */
+.screen-hero + .screen {
+  padding-top: clamp(32px, 5vh, 64px);
+}
+/* Centred screens: heading and intro on the centre line. */
+.screen-centered .screen-head {
+  text-align: center;
+}
+.screen-centered .intro {
+  margin-inline: auto;
+}
+.screen-centered .steps {
+  text-align: center;
+}
+.screen-centered .next {
+  max-width: 760px;
+  margin-inline: auto;
 }
 /* A faint dot pattern fading out of one corner, as in printed decks. */
 .screen:nth-of-type(odd):not(.screen-hero)::after {
@@ -297,11 +317,31 @@ li {
   color: var(--mute);
 }
 .role li {
-  padding: 8px 0;
-  font-size: clamp(22px, 2.2vw, 30px);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 300;
   line-height: 1.2;
   letter-spacing: -0.02em;
   color: var(--ink);
+}
+.role li small {
+  font-size: 0.6em;
+  letter-spacing: 0;
+  color: var(--mute);
+}
+.dot-icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+}
+.dot-icon circle {
+  fill: rgba(255, 255, 255, 0.14);
+}
+.dot-icon circle[data-on] {
+  fill: var(--ink);
 }
 
 /* What everyone gains: three overlapping circles */
@@ -310,6 +350,7 @@ li {
   justify-content: center;
 }
 .circles li {
+  position: relative;
   display: grid;
   place-items: center;
   width: clamp(118px, 25vw, 320px);
@@ -320,12 +361,76 @@ li {
   font-weight: 300;
   letter-spacing: -0.01em;
   color: var(--ink);
+  transition:
+    transform 1.4s var(--ease),
+    opacity 1s ease;
 }
 .circles li + li {
   margin-left: calc(clamp(118px, 25vw, 320px) * -0.14);
 }
-.circles li[data-centre] {
-  background: radial-gradient(circle at 50% 40%, var(--glow), transparent 70%);
+.circles li span {
+  position: relative;
+  z-index: 1;
+}
+/* Before arriving, all three sit together in the middle. */
+.circles[data-in="false"] li {
+  opacity: 0;
+  transform: translateX(calc(var(--i) * -86%)) scale(0.92);
+}
+.circles li[data-centre]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 45%, rgba(141, 180, 226, 0.28), transparent 68%);
+  opacity: 0;
+  transition: opacity 1.2s ease 0.8s;
+}
+.circles[data-in="true"] li[data-centre]::before {
+  opacity: 1;
+  animation: breathe 5s ease-in-out 2s infinite alternate;
+}
+@keyframes breathe {
+  to {
+    transform: scale(0.82);
+    opacity: 0.55;
+  }
+}
+/* A small light travelling round each outline. */
+.orbit {
+  position: absolute;
+  inset: -1px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 1s ease 1.2s;
+  animation: orbit 18s linear infinite;
+}
+.circles li:nth-child(2) .orbit {
+  animation-duration: 14s;
+  animation-direction: reverse;
+}
+.circles li:nth-child(3) .orbit {
+  animation-duration: 22s;
+}
+.circles[data-in="true"] .orbit {
+  opacity: 1;
+}
+.orbit::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  background: var(--ink);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+}
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
 }
 .gains-list {
   display: grid;
@@ -349,6 +454,39 @@ li {
   font-size: clamp(17px, 1.5vw, 20px);
   line-height: 1.4;
   color: var(--mute);
+}
+/* Phones: a left-aligned list, each with a small ring like the circles. */
+@media (max-width: 759px) {
+  .gains-list {
+    gap: 0;
+    text-align: left;
+  }
+  .gains-list > div {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    column-gap: 14px;
+    padding: 18px 0;
+    border-top: 1px solid var(--line);
+  }
+  .gains-list > div::before {
+    content: "";
+    grid-row: span 2;
+    width: 14px;
+    height: 14px;
+    margin-top: 5px;
+    border: 1px solid var(--mute);
+    border-radius: 50%;
+  }
+  .gains-list dt {
+    margin-bottom: 4px;
+    font-size: 19px;
+    font-weight: 300;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .gains-list dd {
+    font-size: 16px;
+  }
 }
 
 /* Price lists: one format for every service */
@@ -958,6 +1096,10 @@ li {
   html {
     scroll-behavior: auto;
   }
+  .orbit,
+  .circles li[data-centre]::before {
+    animation: none !important;
+  }
   *,
   *::before,
   *::after {
@@ -1032,5 +1174,12 @@ li {
   }
   .calc-result .fine {
     display: block;
+  }
+  .circles li {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .orbit {
+    display: none;
   }
 }

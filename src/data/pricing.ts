@@ -5,6 +5,7 @@
 import {
   AGENCY_ADD_ON,
   CREATIVE_SCOPE,
+  MODEL_DEFAULTS,
   REAL_ESTATE_SCOPE,
   REFERRAL_TERMS,
   SERVICES,
@@ -157,4 +158,4 @@ export const PRICE_LISTS: readonly PriceList[] = [
 ];
 
 export const RATE_BPS = REFERRAL_TERMS.defaultFeeBps;
-export const CAP_MONTHS = REFERRAL_TERMS.proposedMaxPaidRetainerMonths;
+export const HORIZON_MONTHS = MODEL_DEFAULTS.horizonMonths;

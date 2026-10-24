@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import type { ServiceId } from "@/data/catalog";
-import { CAP_MONTHS, PRICE_LISTS } from "@/data/pricing";
+import { HORIZON_MONTHS, PRICE_LISTS } from "@/data/pricing";
 import { money } from "@/lib/format";
 import { countsScenario, run, type Counts } from "@/lib/scenario";
 import { Card, Money, Screen, Stepper, tone } from "../Primitives";
@@ -50,7 +50,7 @@ export default function Calculator() {
         </div>
         <Card className="calc-result">
           <div aria-live="polite" aria-atomic="true">
-          <p className="result-label">Real Coder earns over {CAP_MONTHS} months</p>
+          <p className="result-label">Real Coder earns in the first {HORIZON_MONTHS} months</p>
           <Money cents={totals.totalCommission} className="result-total" testId="total" />
           <dl className="result-split">
             <div>
@@ -67,9 +67,9 @@ export default function Calculator() {
             </div>
           </dl>
           <p className="fine">
-            Assumes every client signs and pays in month 1, and monthly clients
-            stay for {CAP_MONTHS} months. Excludes GST. An illustration, not a
-            forecast.
+            Assumes every client signs and pays in month 1 and monthly clients
+            stay all {HORIZON_MONTHS} months. Commission continues for as long as
+            they stay. Excludes GST. An illustration, not a forecast.
           </p>
           </div>
         </Card>
