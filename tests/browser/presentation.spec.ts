@@ -38,8 +38,8 @@ test("every screen renders, dark, with one clear heading and no runtime errors",
   expect(headings).toEqual([
     "Who does what",
     "Branding & Identity",
-    "Real Estate Campaign Design",
-    "Ongoing Design",
+    "Real Estate Campaign Retainers",
+    "Ongoing Design Retainers",
     "How referrals work",
     "Calculate your earnings",
     "Terms",
@@ -80,13 +80,13 @@ test("the calculator adds up clients with the same engine", async ({ page }) => 
   const calc = page.locator("#calculator");
   await expect(page.getByTestId("total")).toHaveText(money(run(countsScenario({ professional: 1, reGrowth: 1 })).totals.totalCommission));
   await calc.getByRole("button", { name: "More: Branding & Identity, Basic / Refresh: clients" }).click();
-  await calc.getByRole("button", { name: "More: Ongoing Design, Embedded: clients" }).click();
-  await calc.getByRole("button", { name: "Fewer: Real Estate Campaign Design, Growth: clients" }).click();
+  await calc.getByRole("button", { name: "More: Ongoing Design Retainers, Embedded: clients" }).click();
+  await calc.getByRole("button", { name: "Fewer: Real Estate Campaign Retainers, Growth: clients" }).click();
   const expected = run(countsScenario({ basic: 1, professional: 1, embedded: 1 })).totals;
   await expect(page.getByTestId("total")).toHaveText(money(expected.totalCommission));
-  await expect(page.getByTestId("oneoff")).toHaveText("$600");
-  await expect(page.getByTestId("monthly")).toHaveText("$600");
-  await expect(calc.getByRole("button", { name: "Fewer: Real Estate Campaign Design, Growth: clients" })).toBeDisabled();
+  await expect(page.getByTestId("oneoff")).toHaveText("$660");
+  await expect(page.getByTestId("monthly")).toHaveText("$420");
+  await expect(calc.getByRole("button", { name: "Fewer: Real Estate Campaign Retainers, Growth: clients" })).toBeDisabled();
 });
 
 test("keyboard, reduced motion and print are usable", async ({ page }, info) => {
@@ -96,7 +96,7 @@ test("keyboard, reduced motion and print are usable", async ({ page }, info) => 
   await toggle.focus();
   await page.keyboard.press("Enter");
   await expect(toggle).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText("Photography and videography")).toBeVisible();
+  await expect(page.getByText("Photography and video", { exact: true })).toBeVisible();
   await page.emulateMedia({ media: "print" });
   await expect(page.getByText("Two consolidated feedback rounds on the selected direction")).toBeVisible();
   if (info.project.name.startsWith("desktop"))

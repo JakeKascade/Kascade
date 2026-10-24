@@ -4,13 +4,13 @@
 
 Everything below appears on the page as *proposed* or *provisional*, or is kept off the page.
 
-- [ ] Basic $2,000 / Professional $4,000 scopes and two feedback rounds.
+- [ ] Basic $1,800 / Professional $4,800 scopes and two feedback rounds.
 - [ ] Brand Strategy as a $4,000–$6,000 add-on (or partly inside Professional?).
-- [ ] Real estate $1,950 / $3,450 / $4,950 for 3 / 6 / 9 new listing campaigns — sustainable given stages, premium properties and backlog?
+- [ ] Real estate $1,950 / $3,450 / $4,950 for 3 / 6 / 9 new listing campaigns — sustainable given stages, premium properties and backlog? Inclusions are now deliberately open (“standard agency deliverables … and more”); confirm that wording is comfortable.
 - [ ] Extra-listing rates ($650 / $575 / $550) or a tier move — **not shown on the page**.
 - [ ] Three-month minimum; quarterly volume reconciliation — **not offered on the page**.
 - [ ] Agency Marketing Creative +$1,250 for 10 hours (marked *Provisional*).
-- [ ] Creative Partner capacity 12 / 26 / 42 hours.
+- [ ] Ongoing design retainers: $1,800 / $3,250 / $4,200 for 12 / 26 / 42 hours ($150 / $125 / $100 an hour). Growth’s $3,250 was set between the two rates — confirm.
 - [ ] 10% on projects; 10% on the **first 12 paid months** of retainers vs Real Coder’s ongoing-commission model (named openly under “To agree together”).
 - [ ] Payment within 14 days of month end; six-month registration protection; 90-day pilot.
 - [ ] Treatment of upgrades, variations, pauses, cancellations, reactivations and retrospective leads (listed as open).
