@@ -14,7 +14,7 @@ Professional + Strategy is illustratively $8,800–$10,800. Professional is a mo
 
 ## B. Real Estate Campaign Retainers — monthly
 
-| Tier | New listing campaigns / month | Fee / month | Per listing at full use | Real Coder’s 10% / month | Over 12 paid months |
+| Tier | New listing campaigns / month | Fee / month | Per listing at full use | Real Coder’s 10% / month | A year, while the client stays |
 |---|---:|---:|---:|---:|---:|
 | Boutique | up to 3 | $1,950 | $650 | $195 | $2,340 |
 | Growth | up to 6 | $3,450 | $575 | $345 | $4,140 |
@@ -42,13 +42,15 @@ Capacity is prioritised against an agreed scope; work beyond allocation is quote
 ## Referral terms (proposed counterproposal)
 
 1. 10% on eligible one-off branding and design fees actually collected (ex GST and pass-through costs).
-2. 10% on eligible referred creative retainers for each client’s **first 12 paid months**. *Proposed, not agreed.* Real Coder’s own proposal offers Kascade ongoing commission on active SEO retainers; the page names this difference openly under “To agree together”.
+2. 10% on eligible referred retainers **for as long as the client stays active and paying** — matched to Real Coder’s own proposal (10% ongoing on active, paid SEO retainers referred by Kascade). The earlier 12-paid-month cap is kept only as a comparison setting in the model.
 3. Commission accrues only on client money received; refunds, credits and write-offs reduce the base.
 4. Paid within 14 days after the end of the month in which eligible funds clear, subject to reconciliation and a valid invoice.
 5. Referrals are client-approved and recorded by both parties; existing active opportunities and duplicates excluded unless agreed; registered introductions protected for six months.
 6. No quotas, reciprocal volume commitments or exclusivity; each business keeps its own delivery, client relationship and scope.
 7. No automatic commission on disbursements, print/media spend, Real Coder’s technical services or unrelated future scopes.
 8. A 90-day operational pilot, then a joint review.
+9. The same both ways: Kascade earns 10% on SEO retainers it refers to Real Coder while they stay active (Real Coder’s proposal).
+10. Optional cross-promotion of each other’s services.
 
 ## Deliberately kept off the page (internal)
 

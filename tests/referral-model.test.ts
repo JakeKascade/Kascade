@@ -38,7 +38,7 @@ const monthly = (id: keyof typeof SERVICES) => {
 const base = (patch: Partial<SimulationInput> = {}): SimulationInput => ({
   horizonMonths: 12,
   feeBps: BPS,
-  recurringCapMonths: REFERRAL_TERMS.proposedMaxPaidRetainerMonths,
+  recurringCapMonths: REFERRAL_TERMS.retainerCommissionMonths,
   deals: [],
   cohorts: [],
   ...patch,
@@ -95,7 +95,8 @@ test("catalogue holds the commercial master's prices in cents", () => {
   assert.equal(STRATEGY_ADD_ON.illustrativeCents, 500_000);
   assert.equal(AGENCY_ADD_ON.monthlyCents, 125_000);
   assert.equal(BPS, 1000);
-  assert.equal(REFERRAL_TERMS.proposedMaxPaidRetainerMonths, 12);
+  assert.equal(REFERRAL_TERMS.retainerCommissionMonths, null, "while active and paying, as in Real Coder's proposal");
+  assert.equal(REFERRAL_TERMS.cappedComparisonMonths, 12);
 });
 
 test("Basic $1,800 at 10% earns $180 once; Kascade keeps $1,620 before costs", () => {
@@ -219,8 +220,12 @@ test("a repeated scenario run never duplicates a one-off commission", () => {
   assert.equal(run(s).totals.totalCommission, 18_000);
 });
 
-test("commission stops after 12 paid months even while the client keeps paying", () => {
-  const out = run(scenario([{ service: "reGrowth", startMonth: 1 }], { horizonMonths: 24 }));
+test("retainer commission continues while the client pays; the capped comparison stops at 12 paid months", () => {
+  const ongoing = run(scenario([{ service: "reGrowth" }], { horizonMonths: 24 }));
+  assert.equal(ongoing.totals.recurringCommission, 828_000);
+  assert.equal(ongoing.totals.endRecurringRunRate, 34_500);
+  assert.equal(retainerCommissionOver(monthly("reGrowth"), 24), 828_000);
+  const out = run(scenario([{ service: "reGrowth", startMonth: 1 }], { horizonMonths: 24, recurringPeriod: "capped" }));
   assert.equal(out.totals.paidClientMonths, 24);
   assert.equal(out.totals.commissionedClientMonths, 12);
   assert.equal(out.totals.recurringCommission, 414_000);
@@ -228,11 +233,6 @@ test("commission stops after 12 paid months even while the client keeps paying",
   assert.equal(out.months[12].clientReceipts, 345_000);
   assert.equal(out.months[12].kascadeAfterReferral, 345_000);
   assert.equal(out.totals.endRecurringRunRate, 0);
-  // The comparison setting models commission while active.
-  const ongoing = run(
-    scenario([{ service: "reGrowth" }], { horizonMonths: 24, recurringPeriod: "ongoing" }),
-  );
-  assert.equal(ongoing.totals.recurringCommission, 828_000);
 });
 
 test("the agency add-on counts only when selected, and only on real estate retainers", () => {
@@ -290,7 +290,7 @@ test("every month reconciles: client payments = commission + Kascade after refer
       {},
       { projectPayment: "split" as const },
       { horizonMonths: 24 },
-      { feeBps: 1250, recurringPeriod: "ongoing" as const },
+      { feeBps: 1250, recurringPeriod: "capped" as const },
     ]) {
       const s = make();
       const out = run({ ...s, settings: { ...s.settings, ...settings } });

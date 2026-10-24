@@ -71,13 +71,29 @@ test("every price list uses the same columns and catalogue figures", async ({ pa
   await expect(page.getByTestId("prices-real-estate")).toContainText("$345");
 });
 
+test("who does what lists three things each, with dot icons", async ({ page }) => {
+  await open(page, "#roles");
+  const roles = page.locator("#roles");
+  await expect(roles.locator(".role").first().locator("li")).toHaveText(["Websites", "SEO & AEO", "PPC (where applicable)"]);
+  await expect(roles.locator(".role").nth(1).locator("li")).toHaveCount(3);
+  await expect(roles.locator(".dot-icon")).toHaveCount(6);
+});
+
+test("the three circles spread into place when they arrive", async ({ page }) => {
+  await open(page);
+  const circles = page.locator(".circles");
+  await expect(circles).toHaveAttribute("data-in", "false");
+  await page.locator("#gains").scrollIntoViewIfNeeded();
+  await expect(circles).toHaveAttribute("data-in", "true");
+});
+
 test("the referral examples are fully visible and come from the model", async ({ page }) => {
   await open(page, "#referrals");
   const pro = SERVICES.professional.billing === "once" ? SERVICES.professional.priceCents : 0;
   await expect(page.getByTestId("example-professional")).toBeVisible();
   await expect(page.getByTestId("example-professional")).toHaveText(money(commissionOn(pro, 1000)));
   await expect(page.getByTestId("example-reGrowth")).toHaveText("$345 a month");
-  await expect(page.locator("#referrals")).toContainText("$4,140 over the first 12 paid months");
+  await expect(page.locator("#referrals")).toContainText("$4,140 a year, for as long as the client stays");
 });
 
 test("the calculator adds up clients with the same engine", async ({ page }) => {

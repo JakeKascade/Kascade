@@ -282,8 +282,10 @@ export const CREATIVE_SCOPE = {
 } as const;
 
 /**
- * Proposed referral terms. 10% on eligible paid fees; recurring commission for
- * the first 12 paid months of each retainer (a proposal, not agreed).
+ * Proposed referral terms, matched to Real Coder's own proposal: 10% of
+ * eligible paid fees, and on retainers for as long as the client stays active
+ * and paying — the same basis Real Coder offers Kascade on SEO retainers.
+ * Still subject to a written agreement.
  */
 export const REFERRAL_TERMS = {
   defaultFeeBps: 1000,
@@ -291,7 +293,12 @@ export const REFERRAL_TERMS = {
   minFeeBps: 500,
   maxFeeBps: 1500,
   stepFeeBps: 50,
-  proposedMaxPaidRetainerMonths: 12,
+  /** Paid months of retainer commission per client; null = while active and paying. */
+  retainerCommissionMonths: null,
+  /** The earlier 12-paid-month cap, kept only as a comparison setting in the model. */
+  cappedComparisonMonths: 12,
+  /** Optional cross-promotion, as Real Coder's proposal contemplates. */
+  crossPromotion: true,
   paymentDaysAfterMonthEnd: 14,
   registrationProtectionMonths: 6,
   pilotDays: 90,

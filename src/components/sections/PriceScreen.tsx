@@ -1,4 +1,4 @@
-import { CAP_MONTHS, RATE_BPS, type PriceList, type PriceRow } from "@/data/pricing";
+import { RATE_BPS, type PriceList, type PriceRow } from "@/data/pricing";
 import { money } from "@/lib/format";
 import { commissionOn } from "@/lib/referral-model";
 import { Disclosure, Screen, emphasise } from "../Primitives";
@@ -63,7 +63,7 @@ export default function PriceScreen({ list }: { list: PriceList }) {
           {list.note && <>{list.note} </>}
           Prices exclude GST.{" "}
           {list.billing === "monthly"
-            ? `Real Coder earns 10% of each monthly payment for the client’s first ${CAP_MONTHS} paid months.`
+            ? "Real Coder earns 10% of every monthly payment, for as long as the client stays."
             : "Real Coder earns 10% of the project fee, once it’s paid."}
         </p>
         <Disclosure label="What’s included">

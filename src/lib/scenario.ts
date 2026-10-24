@@ -43,8 +43,8 @@ export type ReferralLine = {
 export type ScenarioSettings = {
   feeBps: number;
   horizonMonths: number;
-  /** "proposed" = first 12 paid months; "ongoing" = while active (comparison only). */
-  recurringPeriod: "proposed" | "ongoing";
+  /** "whileActive" = every paid month (the proposal); "capped" = first 12 paid months (comparison only). */
+  recurringPeriod: "whileActive" | "capped";
   /** Branding: paid in full, or a 50% deposit with the balance a month later. */
   projectPayment: "full" | "split";
 };
@@ -59,7 +59,7 @@ export const MAX_CLIENTS_PER_LINE = 20;
 export const DEFAULT_SETTINGS: Readonly<ScenarioSettings> = Object.freeze({
   feeBps: REFERRAL_TERMS.defaultFeeBps,
   horizonMonths: MODEL_DEFAULTS.horizonMonths,
-  recurringPeriod: "proposed",
+  recurringPeriod: "whileActive",
   projectPayment: "full",
 });
 
@@ -153,9 +153,9 @@ export function toInput(scenario: Scenario): SimulationInput {
     horizonMonths: H,
     feeBps: settings.feeBps,
     recurringCapMonths:
-      settings.recurringPeriod === "proposed"
-        ? REFERRAL_TERMS.proposedMaxPaidRetainerMonths
-        : null,
+      settings.recurringPeriod === "capped"
+        ? REFERRAL_TERMS.cappedComparisonMonths
+        : REFERRAL_TERMS.retainerCommissionMonths,
     deals,
     cohorts,
   };
