@@ -178,7 +178,7 @@ li {
   font-size: 13px;
   opacity: 0.7;
 }
-.header-meta:last-child {
+.header-meta + .header-meta {
   justify-self: end;
 }
 @media (max-width: 640px) {
@@ -224,6 +224,11 @@ li {
     margin: 0;
     color: #ffffff;
     pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  /* Out of the way as soon as the reader scrolls; back at the top. */
+  [data-scrolled] .hero-lockup {
+    opacity: 0;
   }
   .hero-lockup .logo {
     height: 18px;

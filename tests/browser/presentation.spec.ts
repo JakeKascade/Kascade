@@ -145,8 +145,23 @@ test("phones get a jump nav up top and the logos at the foot of the opening scre
   const hero = await page.locator("#top").boundingBox();
   const logos = await lockup.boundingBox();
   expect(logos && hero && logos.y + logos.height <= hero.y + hero.height && logos.y > hero.y + hero.height - 120).toBe(true);
+  // The logos fade out once scrolled, and back in at the top.
+  await expect(lockup).toHaveCSS("opacity", "1");
+  await page.evaluate(() => window.scrollTo(0, 200));
+  await expect(lockup).toHaveCSS("opacity", "0");
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(lockup).toHaveCSS("opacity", "1");
   await nav.getByRole("link", { name: "Calculator" }).click();
   await expect(page).toHaveURL(/#calculator$/);
+});
+
+test("desktop header: logos left, the title centred, the date right", async ({ page }, info) => {
+  test.skip(info.project.name === "phone-390", "desktop and tablet only");
+  await open(page);
+  const width = page.viewportSize()!.width;
+  const [title, date] = await page.locator(".header-meta").evaluateAll((els) => els.map((el) => el.getBoundingClientRect()));
+  expect(Math.abs(title.x + title.width / 2 - width / 2)).toBeLessThan(2);
+  expect(width - (date.x + date.width)).toBeLessThan(80);
 });
 
 test("touch targets are at least 44px and landscape phones don't scroll sideways", async ({ page }, info) => {
