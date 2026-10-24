@@ -1,11 +1,11 @@
 "use client";
 import { useRef, useState } from "react";
-import { BRAND } from "@/brand/brand";
+import RealCoderLogo from "./RealCoderLogo";
 import Wordmark from "./Wordmark";
 
 type Status = "idle" | "checking" | "wrong" | "locked" | "open";
 
-export default function AccessGate({ length }: { length: number }) {
+export default function AccessGate({ length, partner }: { length: number; partner: boolean }) {
   const [code, setCode] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const input = useRef<HTMLInputElement>(null);
@@ -43,10 +43,14 @@ export default function AccessGate({ length }: { length: number }) {
       data-status={status === "locked" ? "wrong" : status}
     >
       <div className="gate-content">
-        <p className="gate-lockup">
+        <p className="gate-lockup lockup">
           <Wordmark />
-          <span aria-hidden="true">×</span>
-          <span>{BRAND.partner}</span>
+          {partner && (
+            <>
+              <span className="lockup-x" aria-hidden="true">×</span>
+              <RealCoderLogo />
+            </>
+          )}
         </p>
         <h1 className="gate-title">Enter your access code</h1>
         <label className="gate-code" htmlFor="access-code">

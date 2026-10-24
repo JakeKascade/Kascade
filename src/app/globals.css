@@ -1116,14 +1116,10 @@ li {
   text-align: center;
 }
 .gate-lockup {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  font-size: 15px;
   color: var(--mute);
 }
-.gate-lockup {
-  align-items: center;
+.gate-lockup .partner-logo {
+  color: var(--ink);
 }
 .gate-title {
   font-size: clamp(28px, 4vw, 44px);

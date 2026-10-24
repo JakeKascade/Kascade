@@ -18,7 +18,7 @@ Components never hard-code a colour; `globals.css` refers only to tokens (the pr
 ## Current direction — blue-grey
 
 - **Logo:** the supplied lockups in `public/brand/` (white for the dark page and the access screen; black for print). The favicon is the mark on charcoal (`src/app/icon.svg`).
-- **Partner logo:** Real Coder’s logo (as supplied, unaltered) sits beside Kascade’s as “Kascade × real_coder” in the header and the closing line (`src/components/RealCoderLogo.tsx`). It is inlined, not a public file, so it only appears behind the access code and the bare address never names the partner. On phones the header shows only the lockup.
+- **Partner logo:** Real Coder’s logo (as supplied, unaltered) sits beside Kascade’s as “Kascade × real_coder” in the header, the closing line and the code screen of the `/real-coder` link (`src/components/RealCoderLogo.tsx`). It is inlined, not a public file, so it only appears behind the access code and the bare address never names the partner. On phones the header shows only the lockup.
 - **Colour:** blue-black charcoal (`#111317`, raised `#181B21`) with a fine film grain. Text is two-tone: key words white (`#F2F4F6`), the rest blue-grey (`#8A919A`).
 - **Background system:** four ingredients, each used sparingly (set per screen with `Screen`’s `tone`, `glow` and `dots` props):
 

@@ -6,7 +6,7 @@ Live at **https://proposal.kascadestudio.com.au/real-coder** (CNAME `proposal` a
 
 ## Paths
 
-Each proposal has its own path: this one is `src/app/real-coder/page.tsx`. The bare address only ever shows the access screen, so it never names a proposal; once unlocked it forwards to `/real-coder` (`src/app/page.tsx`), so older links keep working. A future proposal would be a new folder alongside it (e.g. `src/app/<partner>/page.tsx`). All paths currently share the one access code.
+Each proposal has its own path: this one is `src/app/real-coder/page.tsx`. The bare address only ever shows the access screen, with Kascade’s logo alone, so it never names a partner (the proxy tells the code screen which link was opened, and only `/real-coder` shows Real Coder’s logo and name); once unlocked it forwards to `/real-coder` (`src/app/page.tsx`), so older links keep working. A future proposal would be a new folder alongside it (e.g. `src/app/<partner>/page.tsx`). All paths currently share the one access code.
 
 Setup:
 
