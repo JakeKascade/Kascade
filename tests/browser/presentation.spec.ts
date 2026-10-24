@@ -6,7 +6,7 @@ import { commissionOn } from "../../src/lib/referral-model";
 import { countsScenario, run } from "../../src/lib/scenario";
 
 const DEV_CODE = "2026";
-const SCREENS = ["top", "roles", "branding", "real-estate", "ongoing", "referrals", "calculator", "terms", "next"];
+const SCREENS = ["top", "roles", "gains", "branding", "real-estate", "ongoing", "referrals", "calculator", "terms", "next"];
 
 /** Unlocks the access screen, opens the page and waits for hydration so input isn't lost. */
 async function open(page: Page, hash = "") {
@@ -32,11 +32,12 @@ test("every screen renders, dark, with one clear heading and no runtime errors",
   await page.emulateMedia({ reducedMotion: "reduce" });
   await open(page);
   expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toMatch(/Inter Tight/i);
-  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(0, 0, 0)");
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(17, 19, 23)");
   for (const id of SCREENS) await expect(page.locator(`#${id}`)).toBeAttached();
   const headings = await page.locator("main h2").allTextContents();
   expect(headings).toEqual([
     "Who does what",
+    "What everyone gains",
     "Branding & Identity",
     "Real Estate Campaign Retainers",
     "Ongoing Design Retainers",

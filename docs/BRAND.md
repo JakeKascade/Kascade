@@ -15,17 +15,28 @@ The Kascade visual identity for this proposal is deliberately deferred. The page
 
 Components never hard-code a colour; `globals.css` refers only to tokens (the print block switches to light values so PDFs stay legible).
 
-## Current direction — monochrome
+## Current direction — blue-grey
 
-- **Colour:** black, white and greys only. Emphasis is **two-tone text**: the key words in white, the rest in grey (`--mute`, 6:1 on black). Neighbouring screens alternate between two close shades of black (`#000` and `#0A0A0A`) instead of divider lines. `--brand` in `tokens.css` is the single slot for a future brand colour (currently white): it colours Real Coder’s earnings and focus states.
-- **Type:** one typeface, **Inter Tight**, at light/regular weights with tight tracking. No serif, mono or display faces. Large type can be light; small text stays at 400 for legibility.
-- **Opening screen:** a two-colour pixel field (`src/components/PixelField.tsx`) — light grey (`#EFEFEF`) breaking down into the black page. Outer corners of each shape are rounded and inner corners filleted, so the forms read as smooth stepped shapes. The dark rises into place on load, a few edge cells quietly flip, and the cell under the pointer softly highlights. Text always sits on light cells; still for reduced motion; omitted in print. The header wordmark inverts against whatever is behind it.
-- **Shapes:** rounded cards (24px), pill buttons with a round icon, pill steppers. The calculator total sits in the one light card on its screen.
-- **Not used:** eyebrows, film grain, glows, hairline frames, dot-matrix numerals.
+- **Logo:** the supplied lockups in `public/brand/` (white for the dark page and the access screen; black for print). The favicon is the mark on charcoal (`src/app/icon.svg`).
+- **Colour:** blue-black charcoal (`#111317` / `#15181D` on alternating screens), each screen with one soft blue light in a corner, a faint dot pattern fading out of some corners, and a fine film grain. Text is two-tone: key words white (`#F2F4F6`), the rest blue-grey (`#8A919A`).
+- **Earnings colour (`--brand`):** the one colour, used only for Real Coder’s earnings — the price-list earnings column, the worked examples and the calculator card. Currently **A · Steel blue** `#8DB4E2` (deep `#5D84B3`). Alternatives, each a two-value change in `tokens.css`:
+
+  | Option | `--brand` | `--brand-deep` |
+  |---|---|---|
+  | A · Steel blue (current) | `#8DB4E2` | `#5D84B3` |
+  | B · Glacier | `#BCD6EE` | `#86A8C9` |
+  | C · Sea-glass | `#9AD1C4` | `#5F9A8D` |
+  | D · Sage | `#BCCAA9` | `#87977A` |
+  | E · Amber | `#E9B872` | `#B8853F` |
+
+- **Type:** one typeface, **Inter Tight**, light (300) for headings with gentle negative tracking (−0.025em), regular for body and small text.
+- **Opening screen:** the rounded pixel field (`src/components/PixelField.tsx`), pale blue-grey breaking into charcoal. Still for reduced motion; omitted in print.
+- **Shapes:** glassy rounded cards (16px, hairline border, faint gradient), pill buttons with a round icon, pill steppers; three overlapping outline circles on “What everyone gains”.
+- **Not used:** eyebrows, divider lines between screens, serif/mono/display faces.
 
 ## For the branding pass
 
-1. **Logo:** put the file in `public/brand/` and replace the text inside `src/components/Wordmark.tsx` with it (keep the accessible name). That updates the header and the access screen.
+1. **Logo:** replace the SVGs in `public/brand/` (keep the file names).
 2. Adjust token values in `tokens.css` if needed (keep the names).
 3. Swap fonts in `fonts.ts` if needed; confirm web licences for any non-OFL font.
 4. Use only approved and permitted Kascade imagery; Botwright work needs permission first.

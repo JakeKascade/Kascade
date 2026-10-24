@@ -46,11 +46,11 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
     const ctx = el?.getContext("2d");
     if (!el || !host || !ctx) return;
     const css = getComputedStyle(document.documentElement);
-    const light = css.getPropertyValue("--light").trim() || "#efefef";
-    const dark = css.getPropertyValue("--bg").trim() || "#000000";
+    const light = css.getPropertyValue("--light").trim() || "#e6e9ed";
+    const dark = css.getPropertyValue("--bg").trim() || "#111317";
     // The pointer's cell: a step darker on light, a step lighter on dark.
-    const hoverOnLight = "#d4d4d4";
-    const hoverOnDark = "#262626";
+    const hoverOnLight = "#cdd4dc";
+    const hoverOnDark = "#242a33";
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let width = 0,

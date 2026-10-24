@@ -6,6 +6,7 @@ import Wordmark from "./Wordmark";
 import Calculator from "./sections/Calculator";
 import { NextSteps, Terms } from "./sections/Close";
 import Hero from "./sections/Hero";
+import Gains from "./sections/Gains";
 import { Roles } from "./sections/Intro";
 import PriceScreen from "./sections/PriceScreen";
 import Referrals from "./sections/Referrals";
@@ -47,11 +48,14 @@ export default function Presentation() {
         <a className="brand" href="#top" aria-label={`${BRAND.studio}, back to the top`}>
           <Wordmark />
         </a>
+        <span className="header-meta">Partnership proposal</span>
+        <span className="header-meta">{BRAND.dated}</span>
       </header>
       <span className="read-progress" ref={progress} aria-hidden="true" />
       <main>
         <Hero />
         <Roles />
+        <Gains />
         {PRICE_LISTS.map((list) => (
           <PriceScreen key={list.id} list={list} />
         ))}

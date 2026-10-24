@@ -1,11 +1,14 @@
 import { BRAND } from "@/brand/brand";
 
-/** Typographic placeholder for the Kascade Studio logo, until the brand pass. */
-export default function Wordmark({ className = "" }: { className?: string }) {
+/** The Kascade Studio logo lockup (supplied artwork, unaltered). */
+export default function Wordmark({ tone = "white", className = "" }: { tone?: "white" | "black"; className?: string }) {
   return (
-    <span className={`wordmark ${className}`} aria-label={BRAND.studio} role="img">
-      <span aria-hidden="true">{BRAND.wordmark.primary}</span>
-      <span aria-hidden="true">{BRAND.wordmark.secondary}</span>
-    </span>
+    <img
+      className={`logo ${className}`}
+      src={tone === "white" ? BRAND.logo.white : BRAND.logo.black}
+      alt={BRAND.studio}
+      width={BRAND.logo.width}
+      height={BRAND.logo.height}
+    />
   );
 }
