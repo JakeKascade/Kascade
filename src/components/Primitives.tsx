@@ -174,6 +174,7 @@ export function Stepper({
 const ICONS = {
   plus: "M12 5v14M5 12h14",
   minus: "M5 12h14",
+  down: "M12 5v14M6 13l6 6 6-6",
 } as const;
 export function Icon({ name, size = 16 }: { name: keyof typeof ICONS; size?: number }) {
   return (

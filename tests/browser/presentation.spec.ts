@@ -134,11 +134,18 @@ test("phones get a jump nav up top and the logos at the foot of the opening scre
   await open(page);
   const nav = page.getByRole("navigation", { name: "Jump to" });
   const lockup = page.locator(".hero-lockup");
+  const cta = page.getByRole("button", { name: "View proposal" });
   if (info.project.name !== "phone-390") {
     await expect(nav).toBeHidden();
     await expect(lockup).toBeHidden();
+    await expect(cta).toBeHidden();
     return;
   }
+  // "View proposal" glides down to the first section.
+  await cta.click();
+  await expect.poll(() => page.evaluate(() => Math.round(document.getElementById("roles")!.getBoundingClientRect().top))).toBe(0);
+  await expect(page.locator("#roles")).toBeFocused();
+  await page.evaluate(() => window.scrollTo(0, 0));
   await expect(nav.getByRole("link")).toHaveText(["Pricing", "Calculator", "Terms"]);
   for (const box of await nav.getByRole("link").evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height)))
     expect(box).toBeGreaterThanOrEqual(44);
