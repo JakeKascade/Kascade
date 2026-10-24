@@ -72,7 +72,16 @@ test("production asks for the access code, never sends the proposal before it, a
     for (let i = 0; i < 5; i++) assert.equal((await post(base, "0000", "203.0.113.9")).status, 401);
     assert.equal((await post(base, CODE, "203.0.113.9")).status, 429);
     assert.equal((await post(base, CODE, "203.0.113.10")).status, 200);
-    const home = await fetch(base, { headers: { cookie: cookie.split(";")[0] } });
+    const session = { cookie: cookie.split(";")[0] };
+    // Locked, the bare address shows the code screen without naming any proposal.
+    const bare = await fetch(base, { redirect: "manual" });
+    assert.equal(bare.status, 200);
+    assert.doesNotMatch(await bare.text(), /real-coder/i);
+    // Unlocked, it forwards to the proposal's own path.
+    const forward = await fetch(base, { headers: session, redirect: "manual" });
+    assert.equal(forward.status, 307);
+    assert.match(forward.headers.get("location") || "", /\/real-coder$/);
+    const home = await fetch(base + "/real-coder", { headers: session });
     assert.equal(home.status, 200);
     const html = await home.text();
     assert.match(html, /id="calculator"/);
@@ -87,6 +96,7 @@ test("production with no configured code fails closed", async () => {
   const { child, base } = await start(3102, baseEnv());
   try {
     assert.match(await (await fetch(base)).text(), /Enter your access code/);
+    assert.match(await (await fetch(base + "/real-coder")).text(), /Enter your access code/);
     assert.equal((await post(base, "2026")).status, 401);
     assert.equal((await post(base, "")).status, 401);
   } finally {

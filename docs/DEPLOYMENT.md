@@ -2,6 +2,12 @@
 
 Deploys from `main` to its own Vercel project, separate from ELITA. Every push to `main` updates the site.
 
+Live at **https://proposal.kascadestudio.com.au/real-coder** (CNAME `proposal` at VentraIP → Vercel; `kascade-real-coder.vercel.app` also works).
+
+## Paths
+
+Each proposal has its own path: this one is `src/app/real-coder/page.tsx`. The bare address only ever shows the access screen, so it never names a proposal; once unlocked it forwards to `/real-coder` (`src/app/page.tsx`), so older links keep working. A future proposal would be a new folder alongside it (e.g. `src/app/<partner>/page.tsx`). All paths currently share the one access code.
+
 Setup:
 
 - Create a **new, separate** Vercel project for this repository (`JakeKascade/Kascade`). Never reuse or redeploy the ELITA project.
