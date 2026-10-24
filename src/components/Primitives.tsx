@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { money } from "@/lib/format";
 
 /** Eases displayed numbers towards their targets. At rest the output equals the
@@ -82,9 +82,18 @@ export function Screen({
   children,
   className = "",
   centered = false,
+  tone = "base",
+  glow,
+  dots = false,
 }: {
   id: string;
   centered?: boolean;
+  /** Background: base charcoal, the slightly raised charcoal, or light. */
+  tone?: "base" | "raised" | "light";
+  /** Where to place a single soft light, e.g. "50% 45%". Use sparingly. */
+  glow?: string;
+  /** The faint dot pattern; used once on the page. */
+  dots?: boolean;
   title: ReactNode;
   intro?: ReactNode;
   children?: ReactNode;
@@ -93,7 +102,10 @@ export function Screen({
   return (
     <section
       id={id}
-      className={`screen ${centered ? "screen-centered" : ""} ${className}`}
+      className={["screen", `screen-${tone}`, centered && "screen-centered", glow && "has-glow", dots && "has-dots", className]
+        .filter(Boolean)
+        .join(" ")}
+      style={glow ? ({ ["--glow-at" as string]: glow } as CSSProperties) : undefined}
       aria-labelledby={`${id}-title`}
     >
       <div className="wrap">

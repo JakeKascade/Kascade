@@ -18,7 +18,5 @@ export const BRAND = {
   description:
     "A proposed referral partnership between Kascade Studio and Real Coder: services, referral terms and an interactive commission calculator.",
   positioning: ["Better brands.", "Stronger digital experiences.", "Shared opportunities."],
-  /** Remove or change once the proposal is approved for sharing. */
-  status: "Working draft",
   dated: "October 2026",
 } as const;

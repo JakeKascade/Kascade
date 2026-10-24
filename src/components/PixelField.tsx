@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, type RefObject } from "react";
+import { cellSize, drawCells, noise, seeded } from "@/lib/pixels";
 
 /**
  * The opening screen's background: a field of square cells in two colours.
@@ -9,33 +10,6 @@ import { useEffect, useRef, type RefObject } from "react";
  * quietly flip, and the cell under the pointer softly highlights. Text sits
  * in a zone that is always kept light.
  */
-
-function seeded(seed: number) {
-  return () => {
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-/** Deterministic hash in [0, 1) for a cell. */
-const hash = (x: number, y: number) => {
-  const h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
-  return h - Math.floor(h);
-};
-/** Smooth value noise in [0, 1]. */
-function noise(x: number, y: number) {
-  const xi = Math.floor(x),
-    yi = Math.floor(y);
-  const xf = x - xi,
-    yf = y - yi;
-  const s = (t: number) => t * t * (3 - 2 * t);
-  const a = hash(xi, yi),
-    b = hash(xi + 1, yi),
-    c = hash(xi, yi + 1),
-    d = hash(xi + 1, yi + 1);
-  return a + (b - a) * s(xf) + (c - a) * s(yf) + (a - b - c + d) * s(xf) * s(yf);
-}
 
 export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLElement | null> }) {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -83,7 +57,8 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
       el.style.width = `${width}px`;
       el.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      size = width < 600 ? 22 : width < 1100 ? 26 : 30;
+      size = cellSize(width);
+      const narrow = width < 600;
       cols = Math.ceil(width / size);
       rows = Math.ceil(height / size);
 
@@ -108,11 +83,26 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
           const dx = Math.max(cx0 - x, 0, x - cx1),
             dy = Math.max(cy0 - y, 0, y - cy1);
           const near = box ? Math.max(0, 1 - Math.hypot(dx, dy) / 7) : 0;
-          // The dark rises from the bottom, higher on the right, with a ragged edge.
-          const edge = 0.64 - (xn - 0.3) * 0.42 + near * 0.45;
-          const level =
-            yn + (noise(x * 0.11, y * 0.11) - 0.5) * 0.75 + (noise(x * 0.36 + 9, y * 0.36) - 0.5) * 0.2;
-          let isDark = level > edge;
+          // The dark rises from the bottom with a ragged edge: higher on the
+          // right on wide screens, an even skyline across phones.
+          let isDark: boolean;
+          if (narrow) {
+            // A skyline in whole cells: each column's top wanders a few rows
+            // around a line midway between the text and the bottom.
+            const base = cy1 + 3 + (rows - cy1 - 3) * 0.32;
+            const top =
+              base +
+              (noise(x * 0.45 + 3, 0.5) - 0.5) * 8 +
+              (noise(x * 0.9 + 17, y * 0.5) - 0.5) * 2.5;
+            isDark = y > Math.max(top, cy1 + 3);
+          } else {
+            const edge = 0.64 - (xn - 0.3) * 0.42 + near * 0.45;
+            const level =
+              yn +
+              (noise(x * 0.11, y * 0.11) - 0.5) * 0.75 +
+              (noise(x * 0.36 + 9, y * 0.36) - 0.5) * 0.2;
+            isDark = level > edge;
+          }
           if (y >= rows - 2) isDark = true;
           if (inText) isDark = false;
           clear.push(inText);
@@ -146,52 +136,7 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
     const draw = (t: number) => {
       if (!width || !height) return;
       const r = size * 0.3;
-      const darkAt = (x: number, y: number) =>
-        x >= 0 && y >= 0 && x < cols && y < rows ? isDark(idx(x, y), t) : y >= rows;
-      ctx.fillStyle = light;
-      ctx.fillRect(0, 0, width, height);
-      // Dark cells, rounding only the corners where both neighbours are light.
-      ctx.fillStyle = dark;
-      ctx.beginPath();
-      for (let y = 0; y < rows; y++)
-        for (let x = 0; x < cols; x++) {
-          if (!darkAt(x, y)) continue;
-          const up = darkAt(x, y - 1),
-            down = darkAt(x, y + 1),
-            left = darkAt(x - 1, y),
-            right = darkAt(x + 1, y);
-          ctx.roundRect(x * size, y * size, size + 0.5, size + 0.5, [
-            !up && !left ? r : 0,
-            !up && !right ? r : 0,
-            !down && !right ? r : 0,
-            !down && !left ? r : 0,
-          ]);
-        }
-      ctx.fill();
-      // Inner corners: fillet a light cell's corner where three dark cells meet it.
-      for (let y = 0; y < rows; y++)
-        for (let x = 0; x < cols; x++) {
-          if (darkAt(x, y)) continue;
-          const corners: [number, number][] = [
-            [-1, -1],
-            [1, -1],
-            [1, 1],
-            [-1, 1],
-          ];
-          for (const [dx, dy] of corners) {
-            if (!darkAt(x + dx, y) || !darkAt(x, y + dy) || !darkAt(x + dx, y + dy)) continue;
-            const cx = x * size + (dx > 0 ? size : 0),
-              cy = y * size + (dy > 0 ? size : 0);
-            const sx = dx > 0 ? -1 : 1,
-              sy = dy > 0 ? -1 : 1;
-            ctx.fillStyle = dark;
-            ctx.fillRect(Math.min(cx, cx + sx * r), Math.min(cy, cy + sy * r), r, r);
-            ctx.fillStyle = light;
-            ctx.beginPath();
-            ctx.arc(cx + sx * r, cy + sy * r, r, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        }
+      drawCells(ctx, cols, rows, size, (x, y) => isDark(idx(x, y), t), light, dark);
       // The pointer's cell, fading as it moves on.
       for (const [i, at] of hover) {
         const a = i === pointer ? 1 : 1 - (t - at) / 0.7;

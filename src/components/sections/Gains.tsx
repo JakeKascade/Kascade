@@ -29,7 +29,7 @@ export default function Gains() {
     return () => observer.disconnect();
   }, []);
   return (
-    <Screen id="gains" centered title={tone("**What everyone** gains")}>
+    <Screen id="gains" centered glow="50% 42%" title={tone("**What everyone** gains")}>
       <div className="gains">
         <ul className="circles" ref={figure} data-in={inView} aria-hidden="true">
           {CIRCLES.map((c, i) => (
