@@ -43,18 +43,42 @@ export function Money({ cents, className, testId }: { cents: number; className?:
   );
 }
 
-/** A full-height screen with an eyebrow, one clear heading and an optional intro line. */
+/** Sets one word or phrase of a heading in the serif italic. Use once per heading at most. */
+export function emphasise(text: string, word?: string): ReactNode {
+  const at = word ? text.indexOf(word) : -1;
+  if (!word || at < 0) return text;
+  return (
+    <>
+      {text.slice(0, at)}
+      <em>{word}</em>
+      {text.slice(at + word.length)}
+    </>
+  );
+}
+
+/** A hairline frame with small + marks at its corners. */
+export function Frame({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={`frame ${className}`}>
+      <span className="corner corner-tl" aria-hidden="true" />
+      <span className="corner corner-tr" aria-hidden="true" />
+      <span className="corner corner-bl" aria-hidden="true" />
+      <span className="corner corner-br" aria-hidden="true" />
+      {children}
+    </div>
+  );
+}
+
+/** A full-height screen with one clear heading and an optional intro line. */
 export function Screen({
   id,
-  eyebrow,
   title,
   intro,
   children,
   className = "",
 }: {
   id: string;
-  eyebrow: string;
-  title: string;
+  title: ReactNode;
   intro?: ReactNode;
   children?: ReactNode;
   className?: string;
@@ -63,7 +87,6 @@ export function Screen({
     <section id={id} className={`screen ${className}`} aria-labelledby={`${id}-title`}>
       <div className="wrap">
         <header className="screen-head">
-          <p className="eyebrow">{eyebrow}</p>
           <h2 id={`${id}-title`} className="title">
             {title}
           </h2>

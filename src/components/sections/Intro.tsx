@@ -1,23 +1,5 @@
 import { BRAND } from "@/brand/brand";
-import { Screen } from "../Primitives";
-
-export function Hero() {
-  return (
-    <section id="top" className="screen screen-hero" aria-labelledby="hero-title">
-      <div className="wrap">
-        <p className="eyebrow">Partnership proposal · {BRAND.dated}</p>
-        <h1 id="hero-title">
-          {BRAND.studio} <span aria-hidden="true">×</span>
-          <span className="sr-only">and</span> {BRAND.partner}
-        </h1>
-        <p className="hero-line">
-          You introduce clients who need design. We do the work. You earn 10%
-          of what they pay.
-        </p>
-      </div>
-    </section>
-  );
-}
+import { Frame, Screen, emphasise } from "../Primitives";
 
 const ROLES = [
   {
@@ -34,20 +16,19 @@ export function Roles() {
   return (
     <Screen
       id="roles"
-      eyebrow="Overview"
-      title="Who does what"
+      title={emphasise("Who does what", "what")}
       intro="Real Coder keeps all web, SEO and technical work. Kascade only does design."
     >
       <div className="roles">
-        {ROLES.map((r) => (
-          <div key={r.who} className="role">
+        {ROLES.map((r, i) => (
+          <Frame key={r.who} className={`role ${i === 1 ? "role-ks" : ""}`}>
             <h3>{r.who}</h3>
             <ul>
-              {r.items.map((i) => (
-                <li key={i}>{i}</li>
+              {r.items.map((item) => (
+                <li key={item}>{item}</li>
               ))}
             </ul>
-          </div>
+          </Frame>
         ))}
       </div>
     </Screen>

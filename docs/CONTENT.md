@@ -2,17 +2,19 @@
 
 The reader is Matt and Sam at Real Coder. The page is deliberately minimal: dark throughout, nine screens, one job per screen, and headings that say exactly what each screen is.
 
-| # | Eyebrow | Heading | The one job |
-|---|---|---|---|
-| 1 | Partnership proposal | Kascade Studio × Real Coder | The deal in one line: you introduce, we do the work, you earn 10% |
-| 2 | Overview | Who does what | Real Coder keeps web/SEO/technical; Kascade only does design |
-| 3 | Service A · One-off projects | Branding & Identity | Price list |
-| 4 | Service B · Monthly packages | Real Estate Campaign Retainers | Price list |
-| 5 | Service C · Monthly packages | Ongoing Design Retainers | Price list |
-| 6 | Referrals | How referrals work | Four steps and two worked payment examples, always visible |
-| 7 | Calculator | Calculate your earnings | How many clients → what Real Coder earns over 12 months |
-| 8 | Proposed terms | Terms | Seven one-line terms and the one open point |
-| 9 | Next steps | Next steps | Agree → trial for 90 days → review |
+No eyebrows: each screen has one heading that says exactly what it is.
+
+| # | Heading | The one job |
+|---|---|---|
+| 1 | Kascade Studio × Real Coder | Your clients’ design department: you introduce, we do the work, you earn 10% |
+| 2 | Who does what | Real Coder keeps web/SEO/technical; Kascade only does design |
+| 3 | Branding & Identity | Price list |
+| 4 | Real Estate Campaign Retainers | Price list |
+| 5 | Ongoing Design Retainers | Price list |
+| 6 | How referrals work | Four steps and two worked payment examples, always visible |
+| 7 | Calculate your earnings | How many clients → what Real Coder earns over 12 months |
+| 8 | Terms | Seven one-line terms and the one open point |
+| 9 | Next steps | Agree → trial for 90 days → review |
 
 ## The price-list system
 

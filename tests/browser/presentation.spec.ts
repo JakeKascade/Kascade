@@ -32,7 +32,7 @@ test("every screen renders, dark, with one clear heading and no runtime errors",
   await page.emulateMedia({ reducedMotion: "reduce" });
   await open(page);
   expect(await page.evaluate(() => getComputedStyle(document.body).fontFamily)).toMatch(/Geist/i);
-  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(12, 12, 12)");
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe("rgb(21, 19, 15)");
   for (const id of SCREENS) await expect(page.locator(`#${id}`)).toBeAttached();
   const headings = await page.locator("main h2").allTextContents();
   expect(headings).toEqual([
@@ -45,6 +45,13 @@ test("every screen renders, dark, with one clear heading and no runtime errors",
     "Terms",
     "Next steps",
   ]);
+  // At most one serif word or phrase per heading.
+  for (const h of await page.locator("main h1, main h2").all())
+    expect(await h.locator("em").count()).toBeLessThanOrEqual(1);
+  expect(
+    await page.evaluate(() => getComputedStyle(document.querySelector("main h2 em")!).fontFamily),
+  ).toMatch(/Instrument Serif/i);
+  await expect(page.locator("canvas.pixel-field")).toBeVisible();
   expect(await noHorizontalScroll(page)).toBe(true);
   const text = await page.evaluate(() => `${document.title} ${document.body.innerText}`);
   expect(text).not.toMatch(/\b(ELITA|Unica77|Optician)\b/i);
@@ -116,4 +123,22 @@ test("touch targets are at least 44px and landscape phones don't scroll sideways
   await page.setViewportSize({ width: 844, height: 390 });
   await page.waitForTimeout(300);
   expect(await noHorizontalScroll(page)).toBe(true);
+});
+
+test("the typography study loads every candidate and the tester updates its code", async ({ page }, info) => {
+  test.skip(!info.project.name.startsWith("desktop"), "desktop only");
+  const errors: string[] = [];
+  page.on("pageerror", (e) => errors.push(e.message));
+  await page.request.post("/api/access", { data: { code: DEV_CODE } });
+  await page.goto("/type");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Typography study");
+  await expect(page.locator(".tb-specimen")).toHaveCount(8);
+  await expect(page.locator(".tb-serif")).toHaveCount(6);
+  await page.getByLabel("Sans", { exact: true }).selectOption("S3");
+  await page.getByRole("button", { name: "600", exact: true }).click();
+  await expect(page.locator(".tb-code")).toHaveText("S3 + R1 @600 · N1");
+  await page.locator(".tb-card").filter({ hasText: "P2" }).first().getByRole("button", { name: "Try in tester" }).click();
+  await expect(page.locator(".tb-code")).toHaveText("S3 + R2 @400 · N1");
+  await page.screenshot({ path: "artifacts/typography-study.png", fullPage: true });
+  expect(errors).toEqual([]);
 });

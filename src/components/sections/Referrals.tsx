@@ -2,7 +2,7 @@ import { REFERRAL_TERMS, SERVICES, type ServiceId } from "@/data/catalog";
 import { CAP_MONTHS, RATE_BPS } from "@/data/pricing";
 import { money } from "@/lib/format";
 import { commissionOn, retainerCommissionOver } from "@/lib/referral-model";
-import { Screen } from "../Primitives";
+import { Frame, Screen, emphasise } from "../Primitives";
 
 const STEPS = [
   { title: "You introduce", text: "A client who needs design, with their permission." },
@@ -25,7 +25,8 @@ function Example({ id, label }: { id: ServiceId; label: string }) {
   const monthly = SERVICES[id].billing === "monthly";
   const suffix = monthly ? " a month" : "";
   return (
-    <figure className="example" aria-label={`${label}: the client pays ${money(paid)}${suffix}; Real Coder earns ${money(fee)}${suffix}`}>
+    <Frame className="example">
+    <figure aria-label={`${label}: the client pays ${money(paid)}${suffix}; Real Coder earns ${money(fee)}${suffix}`}>
       <figcaption>
         <span>{label}</span>
         <strong>
@@ -59,16 +60,17 @@ function Example({ id, label }: { id: ServiceId; label: string }) {
         </div>
       </dl>
     </figure>
+    </Frame>
   );
 }
 
 export default function Referrals() {
   return (
-    <Screen id="referrals" eyebrow="Referrals" title="How referrals work">
+    <Screen id="referrals" title={emphasise("How referrals work", "referrals")}>
       <ol className="steps">
         {STEPS.map((s, i) => (
           <li key={s.title}>
-            <span className="step-num">{i + 1}</span>
+            <span className="step-num">{String(i + 1).padStart(2, "0")}</span>
             <h3>{s.title}</h3>
             <p>{s.text}</p>
           </li>
