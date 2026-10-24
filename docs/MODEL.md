@@ -1,83 +1,71 @@
-# Financial model v1.0
+# Referral model — methodology (v1.0)
 
-## Units, horizon and ownership
+`src/lib/referral-model.ts` is a pure function: `simulate(input) → { months, totals, assumptions }`. No dates, randomness or I/O. Every screen figure, the chart, the month table, the header summary, the drawer and both exports come from the same call, so they always reconcile.
 
-Inputs use AUD dollars, decimal rates and whole days. All financial outputs use integer AUD cents. Display values round to whole dollars; exports retain cents. The year contains 365 days. Model months use `[31,28,31,30,31,30,31,31,30,31,30,31]` days, beginning on model day 1, without asserting an actual calendar start date. A partial final month receives the same monthly ceiling as a full month; unused demand expires each month.
+## Units and sources
 
-The cost-basis purchasing fund is always:
+- All money is **integer AUD cents, excluding GST**. No floating-point totals.
+- Prices, allowances, the 10% rate (`1000` basis points) and the proposed 12-paid-month cap come only from `src/data/catalog.ts`.
+- Time is **model months 1…H** (12 by default; 24 in the labelled extended view). They are not calendar months.
 
-```
-fund = cash + outstanding purchase cost
-     = original principal + Jake retained profit + ELITA retained profit
-```
+## Inputs
 
-Withdrawn ELITA profits leave the fund exactly once. Unsettled margin and the availability fee never enter the trading fund. Borrowing is prohibited.
+| Record | Meaning |
+|---|---|
+| `OneOffDeal` | One signed branding project: service, attached strategy fee (or 0), agreed value, and **receipts** `{ month, amountCents }`. Negative receipts are refunds or credits. |
+| `RetainerCohort` | Whole clients on the same retainer: service, number of clients, start month, monthly fee per client (including an explicitly selected agency add-on), and the exact **paid months**. |
+| `SimulationInput` | Horizon, fee in basis points, retainer cap in paid months (`null` = commission while active, for comparison only), deals and cohorts. |
 
-## Daily order of operations
+The calculator’s lines (`ReferralLine`) translate into these: a branding line with *n* projects becomes *n* deals; a retainer line becomes one cohort paying every month from its start (or for a chosen number of months).
 
-1. Settle every purchase due today, returning purchase cost and recognising its purchase-day margin only now.
-2. Round each realised profit to cents. Allocate 25% to Jake, rounded to cents; ELITA receives the remainder. Withdraw half of ELITA's allocation, rounded to cents; ELITA retains the remainder. This preserves every cent without double counting.
-3. Recalculate the fund and target utilisation. With taper enabled, subtract 5 percentage points for each A$100,000 of growth above the original contribution. This is a continuous slope, with a 50% floor. A deliberately lower starting setting stays at that lower setting rather than being raised to 50%.
-4. With conservative conditions selected, new purchases after the term midpoint earn 80% of the selected margin, and target utilisation falls an additional 10 percentage points. Existing purchases retain their agreed model margin and settlement date. The extra stress reduction can take utilisation below the taper floor.
-5. Calculate today's deployment as the non-negative minimum of available cash, target deployed cost less outstanding cost, target deployed cost divided by settlement days, and unused monthly purchasing demand. Round deployment down to cents. Each purchase settles independently exactly `settlementDays` later.
-6. Record end-of-day cash, committed cost, retained balances, withdrawals and fund. The day-zero record contains only original capital.
+## Rules
 
-The `target deployed cost / settlementDays` daily replenishment limit spreads initial deployment across one settlement interval. The first purchase is on day 1, so the first 15-day settlement is day 16. There is no artificial day-one staggered trading book. Daily tranches represent divisible purchase-cost dollars, not an asserted number or average price of watches. There is no multiplier for higher watch prices.
+1. **Signed and paid, not leads.** Inputs are paid projects and active, paying retainer clients. There is no conversion funnel and no fractional client.
+2. **Commission on receipts only.** `commission = round(receipt × bps ÷ 10,000)` for each receipt, half away from zero, to the cent. Invoiced-but-unpaid value earns nothing; a deposit and a balance each earn once.
+3. **Strategy attaches to its project.** It adds to that deal’s value and receipts; it is never a second deal and never applies to retainers.
+4. **Agency add-on only when selected**, and only on real estate retainers.
+5. **10+ listing retainers need an entered agreed fee.** Without one the line is excluded and flagged; nothing is extrapolated from the published tiers.
+6. **Recurring commission applies to each client’s first 12 paid months** (proposed). After that the client may keep paying — those receipts count as client payments and Kascade revenue, but earn no commission.
+7. **Unpaid, late or cancelled months earn nothing.** No churn is assumed unless a shorter stay is entered.
+8. **Year-one totals add actual paid months.** They are never the month-12 run rate × 12.
+9. **Payments after the horizon aren’t counted** (e.g. a balance due in month 13) and are disclosed.
 
-When target utilisation falls, existing purchases are allowed to settle; the engine does not sell or cancel them to force immediate compliance. New deployments remain constrained by target headroom and cash.
+## Outputs
 
-## Demand versus capacity
+Per month: projects paying, new retainer clients, paying retainers, commissionable retainers, one-off and retainer receipts, eligible receipts, one-off / recurring / total commission, cumulative figures, and **Kascade after referral = client receipts − commission**.
 
-Without a demand limit, every day assumes sufficient qualifying opportunities for the daily budget: a hypothetical capacity case. A monthly demand ceiling limits purchase cost, not sale revenue. Purchases may stop early in a month after exhausting the ceiling; it resets at the next model month. Cash can remain idle.
+That last figure is **revenue before Kascade’s delivery, staff and operating costs. It is never profit.** The UI labels it “Kascade revenue after commission, before expenses”.
 
-The viability table's first volume column comes from a companion run with only the demand ceiling removed. It is the actual volume that the same engine funds in that capacity case. The next column contains actual funded volume from the constrained model. Both are monthly flows; end-period fund, committed cost and cash are balances. Recycling can make a monthly flow larger than the fund balance. Available utilisation headroom is disclosed separately from all available cash.
+Totals add the end-of-horizon recurring run rate, paid and commissioned client-months, project and client counts, and receipts falling after the horizon.
 
-## Fee, exit and wind-down
+## Reconciliation
 
-The fee is `round(original capital in cents × 0.04 × termDays / 365)`. It is due from ELITA separately from trading profit at termination or scheduled maturity. Fee accrual is A$986.30 at day 90, A$1,972.60 at day 180 and A$4,000.00 at day 365 for A$100,000 committed capital. The payout tables aggregate the fee obligation and subsequent capital distributions; these totals are not a promise that every component is paid on one day. The daily ledger tracks trading-fund cash, with the fee accounted for separately in the payout reconciliation. Actual payment dates and any external fee funding must be agreed.
+For every month: `clientReceipts = totalCommission + kascadeAfterReferral` and `totalCommission = oneOff + recurring`. `reconciles(output)` checks this, and the tests run it across every preset and setting combination.
 
-Selecting 90 or 180 days models an election to stop new funding on that day. Purchases funded on or before that day continue to their independent settlement dates. The annual selection stops at day 365. Final balances and payouts assume all those purchases settle at their modelled margins, up to one settlement interval later. Fee accrual stops at the selected term; extra wind-down fee days are not assumed. Formal terms must resolve actual notice requirements, failed settlements, valuation of open positions and fee accrual during any extended wind-down.
+## Worked examples (all in `tests/referral-model.test.ts`)
 
-```
-Jake final payout = original capital + accumulated 25% trading allocation + fee
-Jake total profit = accumulated trading allocation + fee
+| Case | Result |
+|---|---|
+| Basic $2,000 paid in full | $200 commission; Kascade $1,800 before costs |
+| Professional $4,000 + Strategy $5,000 | $900 on $9,000 |
+| One paid month of Boutique / Growth / Volume | $195 / $345 / $495 |
+| One Growth retainer, months 1–12 | $4,140 |
+| Growth retainers starting months 1, 4, 7, 10 | 30 paid client-months · $10,350 · month-12 run rate $1,380 (not $16,560) |
+| …plus two paid Professional projects | $11,150 |
+| Boutique paid months 1–3 and 6 only | $195 in those four months, $0 otherwise |
+| $2,000 paid, then $500 refunded | +$200, then −$50 → $150 |
+| Growth retainer over a 24-month view | $4,140 — commission stops after 12 paid months while the client keeps paying |
 
-ELITA final lump sum = retained 75%-allocation profits − fee
-ELITA total net profit = periodic withdrawals + final lump sum
-```
+## Illustrative presets
 
-Negative ELITA final proceeds represent an external payment required from ELITA. This is never paid by reducing Jake's original principal inside the model. All payouts assume ELITA can perform its obligations; that is not a guarantee of collection or legal security.
+| Preset | Lines | Year-one commission |
+|---|---|---|
+| One agency, one brand (default) | Growth agency from month 1; Professional paid month 2 | $4,540 |
+| An agency each quarter | Growth agencies months 1, 4, 7, 10; two Professional projects month 3 | $11,150 |
+| A broader mix | Basic months 1 and 6; Professional + strategy month 4; Volume agency from month 5; Essential creative from month 3 | $7,260 |
 
-## Manual reconciliation — default 15-day case
-
-Day 1 funds A$4,666.66. Through day 15, A$69,999.90 is committed and no profit is realised. On day 16, the first purchase settles:
-
-- Trading profit: A$4,666.66 × 7%, rounded = **A$326.67**.
-- Jake retained allocation = **A$81.67**.
-- ELITA allocation = **A$245.00**, split into **A$122.50 withdrawn** and **A$122.50 retained**.
-- Fund becomes A$100,000 + A$81.67 + A$122.50 = **A$100,204.17** before that day's purchase moves cash into committed cost.
-
-At day 365, the fund is **A$196,523.93**, comprising **A$69,849.90 cash + A$126,674.03 outstanding cost**. Those outstanding purchases are not treated as settled cash or as immediate payouts.
-
-After the last existing purchase settles on day 380:
-
-```
-Original capital                         A$100,000.00
-Jake retained trading profit              A$40,827.16
-ELITA retained trading profit             A$61,238.70
-Final purchasing-fund cash               A$202,065.86
-
-Jake final payout (including A$4,000 fee) A$144,827.16
-ELITA final lump sum (after fee)          A$57,238.70
-Combined final payouts                   A$202,065.86
-
-ELITA periodic withdrawals                A$61,240.59
-Final cash + withdrawals                 A$263,306.45
-Original capital + all trading profit    A$263,306.45
-```
-
-The small difference between ELITA retained and withdrawn balances comes from cent rounding at each independent settlement. The financial tests reproduce the first-settlement hand calculation and reconcile the full ledger, including every purchase's cash availability, allocation and settlement date.
+These are illustrations chosen to show the mechanics, not targets or forecasts. Their assumptions are the lines themselves, shown in full in the calculator.
 
 ## Limitations
 
-These are fixed-delay, fixed-margin illustrations with a defined optional stress, not forecasts. The model omits discrete whole-watch constraints, actual customer pipelines, stochastic delays, defaults, trading losses, overheads, tax and FX changes. It contains no current customer, watch, deal or pipeline data. ELITA's proposed loss responsibility is a contractual discussion point, not collateral or risk elimination.
+No tax, GST treatment, payment timing within a month, invoice terms, pauses with resumption rules, upgrades/downgrades, or retrospective leads — those terms are still to be agreed (see `PACKAGES.md`). Commission is shown in the month the client pays; the proposed payout to Real Coder is within 14 days after that month ends.

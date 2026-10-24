@@ -1,57 +1,76 @@
-import { compare, simulate, type Assumptions } from "./model";
+import { CATALOG_VERSION } from "@/data/catalog";
+import { run, toInput, type Scenario } from "./scenario";
 
-export const MODEL_VERSION = "ELITA daily settlement 1.0";
-export function exportResults(assumptions: Assumptions) {
-  const scenarios = compare(assumptions);
+export const MODEL_VERSION = "Kascade × Real Coder referral model 1.0";
+
+/** The full scenario and its results, straight from the engine, in exact cents. */
+export function exportResults(scenario: Scenario) {
+  const results = run(scenario);
   return {
     model: MODEL_VERSION,
-    classification: "PRIVATE & CONFIDENTIAL — HYPOTHETICAL DISCUSSION DRAFT",
-    units:
-      "All output money values are integer AUD cents; assumption amounts are AUD dollars.",
-    assumptions: { ...assumptions },
-    methodology:
-      "Daily settlements before purchases; daily deployment <= target/settlementDays, available cash, target headroom and remaining monthly demand. Cost-basis fund. Fee on original capital, Actual/365. No new purchases after selected term; final payouts include subsequent settlement of existing purchases.",
-    scenarios: scenarios.map((s) => ({
-      settlementDays: s.assumptions.settlementDays,
-      atTerm: s.atTerm,
-      payout: s.payout,
-      windDownDays: s.windDownDays,
-      afterWindDown: s.afterWindDown,
-      months: s.months,
-      daily: s.daily,
-      purchases: s.purchases,
-      settlements: s.settlements,
-    })),
-    steadyCounterpart:
-      assumptions.conditions === "conservative"
-        ? simulate({ ...assumptions, conditions: "steady" })
-        : null,
-    disclosure:
-      "Illustrative capacity model, not forecast or agreement. No tax, FX, general overheads or defaults. Unsettled assumed margins are not realised at the selected term. External ELITA funding may be needed for the fee. No security or guarantee is represented.",
+    catalogue: CATALOG_VERSION,
+    classification: "PROPOSED PARTNERSHIP — ILLUSTRATIVE SCENARIO, NOT A FORECAST OR AGREEMENT",
+    units: "All money values are integer AUD cents, excluding GST.",
+    scenario,
+    input: toInput(scenario),
+    results: { months: results.months, totals: results.totals },
+    assumptions: results.assumptions,
+    definitions: {
+      clientReceipts: "Payments clients made to Kascade for the modelled referrals.",
+      totalCommission: "Real Coder's referral commission on eligible client payments.",
+      kascadeAfterReferral:
+        "Client payments less referral commission, before Kascade's delivery and operating costs. Not profit.",
+    },
   };
 }
-export function exportCsv(assumptions: Assumptions) {
-  const header =
-    "scenario_days,day,phase,fund_AUD,cash_AUD,committed_cost_AUD,new_purchases_AUD,settled_cost_AUD,realised_profit_AUD,jake_retained_AUD,elita_retained_AUD,elita_withdrawn_AUD";
-  const rows = compare(assumptions).flatMap((s) =>
-    s.daily.map((d) =>
-      [
-        s.assumptions.settlementDays,
-        d.day,
-        d.day <= assumptions.termDays ? "operating" : "wind_down",
-        ...[
-          d.fund,
-          d.cash,
-          d.committed,
-          d.funded,
-          d.settledCost,
-          d.realisedProfit,
-          d.jakeRetained,
-          d.elitaRetained,
-          d.elitaWithdrawn,
-        ].map((v) => (v / 100).toFixed(2)),
-      ].join(","),
-    ),
+
+export function exportCsv(scenario: Scenario) {
+  const { months, totals } = run(scenario);
+  const dollars = (c: number) => (c / 100).toFixed(2);
+  const header = [
+    "month",
+    "projects_paying",
+    "new_retainer_clients",
+    "active_paid_retainers",
+    "client_payments_AUD",
+    "eligible_payments_AUD",
+    "one_off_commission_AUD",
+    "recurring_commission_AUD",
+    "real_coder_commission_AUD",
+    "cumulative_commission_AUD",
+    "kascade_after_referral_before_costs_AUD",
+  ].join(",");
+  const rows = months.map((m) =>
+    [
+      m.month,
+      m.projectsPaying,
+      m.newRetainerClients,
+      m.activePaidRetainers,
+      ...[
+        m.clientReceipts,
+        m.eligibleReceipts,
+        m.oneOffCommission,
+        m.recurringCommission,
+        m.totalCommission,
+        m.cumulativeCommission,
+        m.kascadeAfterReferral,
+      ].map(dollars),
+    ].join(","),
   );
-  return [header, ...rows].join("\n");
+  const total = [
+    "total",
+    "",
+    "",
+    totals.paidClientMonths,
+    ...[
+      totals.clientReceipts,
+      totals.eligibleReceipts,
+      totals.oneOffCommission,
+      totals.recurringCommission,
+      totals.totalCommission,
+      totals.totalCommission,
+      totals.kascadeAfterReferral,
+    ].map(dollars),
+  ].join(",");
+  return [header, ...rows, total].join("\n") + "\n";
 }

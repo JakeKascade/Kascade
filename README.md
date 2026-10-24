@@ -1,38 +1,37 @@
-# ELITA — A Potential Partnership
+# Kascade Studio × Real Coder — Partnership proposal
 
-Standalone ELITA capital partnership presentation and interactive 12-month financial simulator.
+An interactive partnership proposal for Matt and Sam at Real Coder: Kascade’s services, how referrals work, and a referral-commission calculator.
 
-**Live site:** https://elita-capital-simulator.vercel.app
+**Status: working draft (V1).** Pending Callum’s commercial review. Not approved for sharing with Real Coder, and not deployed. Every price and term is a proposal, not an agreement.
 
-**Access:** no application username or password. The site is accessible by link; search engines are discouraged from indexing it, but this does not make the information private.
+## What’s here
 
-## Deployment
+- An editorial, panel-by-panel presentation (sticky header, chapter navigation, reading progress, quiet reveals, print/PDF).
+- A typed service catalogue — the single source for every price, allowance and term: [`src/data/catalog.ts`](src/data/catalog.ts).
+- A pure, deterministic referral model in integer cents: [`src/lib/referral-model.ts`](src/lib/referral-model.ts), with the calculator’s scenario layer in [`src/lib/scenario.ts`](src/lib/scenario.ts).
+- The calculator, plus a header **Scenario** drawer that edits the same scenario from anywhere on the page, with JSON/CSV exports.
+- An access-code screen (a sharing deterrent, not authentication).
+- A neutral, replaceable visual foundation; branding is deliberately deferred.
 
-GitHub: `JakeKascade/elita-capital-simulator` (`main`).
-Vercel: `elita-capital-simulator`, Next.js, Node 24.x, project root `.`.
-Commands are set in `vercel.json`. The deployment requires no application credentials or other secrets.
+## Documentation
+
+- [Content architecture and narrative decisions](docs/CONTENT.md)
+- [Referral model methodology](docs/MODEL.md)
+- [Package scope and proposed terms](docs/PACKAGES.md)
+- [Brand foundation and how to rebrand](docs/BRAND.md)
+- [Deployment](docs/DEPLOYMENT.md) — preview only with approval
+- [Review checklist and test report](docs/REVIEW.md)
 
 ## Local development
 
 ```sh
 npm ci
-npm run dev
-npm test
+npm run dev          # http://127.0.0.1:3000 — development access code: 2026
+npm test             # referral model, presets and exports
 npm run typecheck
 npm run build
-npm run test:security
-npm run test:browser
+npm run test:security  # production access gate (needs a build)
+npm run test:browser   # Playwright, five viewports
 ```
 
-## Included functionality
-
-- ELITA-branded presentation with its authorised supplied logo and colour system; the original supplied Optician Sans and Unica77 typography is retained with the user's confirmation of web-use approval.
-- Interactive initial capital, net trading margin, utilisation, settlement period, term and demand controls.
-- Three settlement scenarios, fund growth and profit allocation charts.
-- Jake's and ELITA's individual capital, profit, withdrawals, availability fee and exit payouts.
-- Assumption and viability disclosures, JSON/CSV exports and print view.
-- Public access without a username or password; noindex/nofollow metadata and no-referrer headers.
-
-The financial projections are hypothetical, before tax, foreign exchange movements, general overhead and credit risk. See [the model methodology](docs/MODEL.md), [brand provenance and licensing](docs/BRAND.md), [deployment details](docs/DEPLOYMENT.md), and [validation](docs/VALIDATION.md).
-
-**Typography:** The original supplied Unica77 and Optician Sans fonts are retained for the public ELITA-branded presentation. The site owner has confirmed approval for their web use.
+Set `KASCADE_ACCESS_CODE` in production (see `.env.example`). Without it, the production site stays locked.
