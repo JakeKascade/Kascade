@@ -21,7 +21,8 @@ export default function Presentation() {
     document.documentElement.dataset.ready = "true";
   }, []);
 
-  // A hairline under the header that fills as the page is read.
+  // A hairline under the header that fills as the page is read; and, once the
+  // reader leaves the top, a flag the phone logos fade out on.
   useEffect(() => {
     let frame = 0;
     const update = () => {
@@ -29,6 +30,7 @@ export default function Presentation() {
       const el = document.documentElement;
       const range = el.scrollHeight - window.innerHeight;
       progress.current?.style.setProperty("--progress", String(range > 0 ? Math.min(1, el.scrollTop / range) : 0));
+      el.toggleAttribute("data-scrolled", el.scrollTop > 8);
     };
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
@@ -40,6 +42,7 @@ export default function Presentation() {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      document.documentElement.removeAttribute("data-scrolled");
     };
   }, []);
 
