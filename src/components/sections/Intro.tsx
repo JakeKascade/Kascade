@@ -26,7 +26,7 @@ const ROLES = [
   },
   {
     who: BRAND.studio,
-    items: ["Branding & identity", "Real estate campaign design", "Ongoing design"],
+    items: ["Branding & identity", "Real estate campaign retainers", "Ongoing design retainers"],
   },
 ];
 

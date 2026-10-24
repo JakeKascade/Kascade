@@ -6,13 +6,13 @@ Documented separately from page copy. The values live in `src/data/catalog.ts`; 
 
 | Package | Price | Real Coder’s 10% |
 |---|---:|---:|
-| Basic / Refresh | $2,000 | $200 |
-| Professional Branding | $4,000 | $400 |
+| Basic / Refresh | $1,800 | $180 |
+| Professional Branding | $4,800 | $480 |
 | + Brand Strategy & Positioning (add-on only) | +$4,000–$6,000 by scope; $5,000 used only for modelling | +$400–$600 |
 
-Professional + Strategy is illustratively $8,000–$10,000. Professional is a more comprehensive identity service, not a refresh plus extras. Turnaround is confirmed after scoping and is deliberately not published. Full inclusions and exclusions are in the catalogue and shown in the page’s expandable details.
+Professional + Strategy is illustratively $8,800–$10,800. Professional is a more comprehensive identity service, not a refresh plus extras. Turnaround is confirmed after scoping and is deliberately not published. Full inclusions and exclusions are in the catalogue and shown in the page’s expandable details.
 
-## B. Real Estate Campaign Creative — monthly
+## B. Real Estate Campaign Retainers — monthly
 
 | Tier | New listing campaigns / month | Fee / month | Per listing at full use | Real Coder’s 10% / month | Over 12 paid months |
 |---|---:|---:|---:|---:|---:|
@@ -22,17 +22,20 @@ Professional + Strategy is illustratively $8,000–$10,000. Professional is a mo
 | 10+ | tailored | agreed | — | on the agreed fee | — |
 
 - **New listing campaign:** counted once, when Kascade accepts the complete brief. Later standard stages for the same property are included.
-- **Production conditions, inclusions and exclusions:** in the catalogue and the page details (design production only — not photography, copywriting from scratch, printing, media buying, SEO/AEO or web).
+- **Inclusions (deliberately open on the page):** standard agency deliverables — coming soon, for sale and sold marketing collateral, including signboards, brochures, flyers, EDM designs and more. Not included: photography and video, printing, copywriting from scratch, ad spend and posting.
+- **Production conditions (confirm at onboarding, not shown on the page):** approved brand and template library, property information from the agent, approved high-resolution photography, defined formats, one creative direction per standard property, two consolidated revision rounds per stage, reasonable turnaround after a complete brief.
 - **Proposed term:** three-month initial engagement, billed monthly, reviewed against actual listings and workload. Quarterly volume reconciliation is *not* offered; it is listed for review.
 - **Agency Marketing Creative add-on (provisional):** +$1,250/month for up to 10 agreed creative hours of agency-wide marketing. Counts toward commission only when selected.
 
-## C. Kascade Creative Partner — monthly, outside real estate
+## C. Ongoing Design Retainers — monthly, outside real estate
 
-| Tier | Fee / month | Capacity | Real Coder’s 10% / month |
-|---|---:|---:|---:|
-| Essential | $2,000 | up to 12 creative hours | $200 |
-| Growth | $4,000 | up to 26 creative hours | $400 |
-| Embedded | $6,000 | up to 42 creative hours | $600 |
+| Tier | Fee / month | Capacity | Effective hourly rate | Real Coder’s 10% / month |
+|---|---:|---:|---:|---:|
+| Essential | $1,800 | up to 12 design hours | $150 | $180 |
+| Growth | $3,250 | up to 26 design hours | $125 | $325 |
+| Embedded | $4,200 | up to 42 design hours | $100 | $420 |
+
+Growth sits between the Essential and Embedded hourly rates ($125/hour).
 
 Capacity is prioritised against an agreed scope; work beyond allocation is quoted or moves tier; capacity doesn’t accumulate indefinitely; suggested three-month initial term. A bespoke *Embedded Marketing Partnership* is scoped separately and is not the same as the Embedded tier.
 
@@ -49,6 +52,6 @@ Capacity is prioritised against an agreed scope; work beyond allocation is quote
 
 ## Deliberately kept off the page (internal)
 
-- The capacity sanity check (six production hours per listing; ~$97.50 / $86.25 / $82.50 per hour after commission) and the creative-retainer revenue-per-hour figures. Planning metrics for Callum, not client-facing.
+- The capacity sanity check (six production hours per listing; ~$97.50 / $86.25 / $82.50 per hour after commission). After commission, the ongoing retainers realise $135 / $112.50 / $90 per capacity hour before costs. Planning metrics for Callum, not client-facing.
 - Possible extra-work rates ($650 / $575 / $550 per extra listing). Awaiting approval.
 - Botwright examples and any portfolio imagery, pending permission.

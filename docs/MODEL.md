@@ -46,12 +46,12 @@ For every month: `clientReceipts = totalCommission + kascadeAfterReferral` and `
 
 | Case | Result |
 |---|---|
-| Basic $2,000 paid in full | $200 commission; Kascade $1,800 before costs |
-| Professional $4,000 + Strategy $5,000 | $900 on $9,000 |
+| Basic $1,800 paid in full | $180 commission; Kascade $1,620 before costs |
+| Professional $4,800 + Strategy $5,000 | $980 on $9,800 |
 | One paid month of Boutique / Growth / Volume | $195 / $345 / $495 |
 | One Growth retainer, months 1–12 | $4,140 |
 | Growth retainers starting months 1, 4, 7, 10 | 30 paid client-months · $10,350 · month-12 run rate $1,380 (not $16,560) |
-| …plus two paid Professional projects | $11,150 |
+| …plus two paid Professional projects | $11,310 |
 | Boutique paid months 1–3 and 6 only | $195 in those four months, $0 otherwise |
 | $2,000 paid, then $500 refunded | +$200, then −$50 → $150 |
 | Growth retainer over a 24-month view | $4,140 — commission stops after 12 paid months while the client keeps paying |

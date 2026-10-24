@@ -99,8 +99,8 @@ export const PRICE_LISTS: readonly PriceList[] = [
   {
     id: "real-estate",
     eyebrow: "Service B · Monthly packages",
-    title: "Real Estate Campaign Design",
-    intro: "All the standard artwork for every listing, from launch to sold.",
+    title: "Real Estate Campaign Retainers",
+    intro: `Standard agency deliverables for every listing: ${REAL_ESTATE_SCOPE.summary.charAt(0).toLowerCase()}${REAL_ESTATE_SCOPE.summary.slice(1)}`,
     billing: "monthly",
     rows: [
       ...(["boutique", "reGrowth", "volume"] as const).map((id) => ({
@@ -130,14 +130,13 @@ export const PRICE_LISTS: readonly PriceList[] = [
     note: "A listing counts once, when we accept its brief. All later artwork for that property is included.",
     included: [
       { heading: "Every listing includes", items: REAL_ESTATE_SCOPE.included },
-      { heading: "We need from the agency", items: REAL_ESTATE_SCOPE.conditions },
       { heading: "Not included", items: REAL_ESTATE_SCOPE.excluded },
     ],
   },
   {
     id: "ongoing",
     eyebrow: "Service C · Monthly packages",
-    title: "Ongoing Design",
+    title: "Ongoing Design Retainers",
     intro: "A monthly design team for businesses outside real estate.",
     billing: "monthly",
     rows: (["essential", "creativeGrowth", "embedded"] as const).map((id) => ({

@@ -52,7 +52,7 @@ export const SERVICES: Readonly<Record<ServiceId, Service>> = {
     billing: "once",
     name: "Basic / Refresh",
     short: "Basic / Refresh",
-    priceCents: 200_000,
+    priceCents: 180_000,
     summary: "A clean, consistent core identity.",
     fits: "New or established businesses that need a professional visual foundation, or a brand that needs refinement rather than reinvention.",
     included: [
@@ -77,7 +77,7 @@ export const SERVICES: Readonly<Record<ServiceId, Service>> = {
     billing: "once",
     name: "Professional Branding",
     short: "Professional Branding",
-    priceCents: 400_000,
+    priceCents: 480_000,
     summary: "A fuller identity system, ready for wider marketing.",
     fits: "Businesses that want a fully developed identity, better consistency across touchpoints and a stronger base for future marketing.",
     included: [
@@ -153,7 +153,7 @@ export const SERVICES: Readonly<Record<ServiceId, Service>> = {
     billing: "monthly",
     name: "Essential",
     short: "Creative Partner · Essential",
-    monthlyCents: 200_000,
+    monthlyCents: 180_000,
     capacityHours: 12,
     summary: "Up to 12 creative hours a month.",
     fits: "Businesses with light recurring campaign and design needs.",
@@ -166,7 +166,7 @@ export const SERVICES: Readonly<Record<ServiceId, Service>> = {
     billing: "monthly",
     name: "Growth",
     short: "Creative Partner · Growth",
-    monthlyCents: 400_000,
+    monthlyCents: 325_000,
     capacityHours: 26,
     summary: "Up to 26 creative hours a month.",
     fits: "Businesses with regular, multi-channel creative demand.",
@@ -179,7 +179,7 @@ export const SERVICES: Readonly<Record<ServiceId, Service>> = {
     billing: "monthly",
     name: "Embedded",
     short: "Creative Partner · Embedded",
-    monthlyCents: 600_000,
+    monthlyCents: 420_000,
     capacityHours: 42,
     summary: "Up to 42 creative hours a month.",
     fits: "Businesses needing substantial ongoing creative production.",
@@ -232,58 +232,21 @@ export const AGENCY_ADD_ON = {
 } as const;
 
 export const REAL_ESTATE_SCOPE = {
-  stages: [
-    {
-      name: "Launch",
-      items: ["Signboard artwork", "Brochure and feature sheet", "Launch social set"],
-    },
-    {
-      name: "Campaign",
-      items: ["Digital ad creative", "EDM artwork", "Supplied-placement formats"],
-    },
-    {
-      name: "Open homes & auction",
-      items: ["Open-home creative", "Auction-day artwork"],
-    },
-    {
-      name: "Updates",
-      items: ["Price and campaign updates", "Standard variations"],
-    },
-    {
-      name: "Sold",
-      items: ["Just Sold artwork", "Post-sale standard creative"],
-    },
-  ],
+  /** Deliberately open: standard agency deliverables, not an exhaustive list. */
+  summary:
+    "Coming soon, for sale and sold marketing collateral, including signboards, brochures, flyers, EDM designs and more.",
   included: [
-    "Property signboards and print-ready artwork",
-    "Brochure, flyer and feature-sheet layouts using the agreed agency template system",
-    "Listing launch social artwork, including typical format variations",
-    "Digital campaign artwork, still-image advertising creative and supplied-placement formats",
-    "EDM artwork or a templated layout for the agency’s mailing platform",
-    "Open-home and auction-related creative",
-    "Price and campaign update creative and standard variations",
-    "Just Sold and post-sale standard artwork",
-    "Asset management and print-ready file preparation within the defined campaign scope",
-  ],
-  conditions: [
-    "An approved base brand and template library",
-    "Clear property information supplied by the agent",
-    "High-resolution, approved photography",
-    "Defined campaign deliverable formats",
-    "One primary creative direction per standard property",
-    "Two consolidated non-factual revision rounds per campaign stage",
-    "Reasonable standard turnaround after a complete brief",
+    "Coming soon, for sale and sold marketing collateral",
+    "Signboards, brochures and flyers",
+    "Social and digital ad artwork",
+    "EDM designs",
+    "Other standard agency deliverables",
   ],
   excluded: [
-    "Photography and videography",
-    "Property copywriting from scratch",
-    "Extensive image manipulation",
-    "Print manufacture and distribution",
-    "Media purchasing, paid ad account management, scheduling and posting",
-    "Website or landing page development",
-    "New agency identities or bespoke signature-property branding",
-    "Unusual large-format collateral and third-party expenses",
-    "Major new creative concepts outside the standard kit",
+    "Photography and video",
+    "Printing",
+    "Copywriting from scratch",
+    "Ad spend and posting",
   ],
   definition:
     "A new listing campaign is counted once, when Kascade accepts the initial complete campaign brief. Standard later-stage artwork for the same property is part of that campaign, not another new listing.",
