@@ -15,7 +15,6 @@
     "test:security": "tsx --test tests/security.integration.ts"
   },
   "dependencies": {
-    "geist": "1.8.2",
     "next": "16.4.2",
     "react": "19.2.4",
     "react-dom": "19.2.4"

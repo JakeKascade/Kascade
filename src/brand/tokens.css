@@ -1,38 +1,33 @@
 /*
  * Design tokens — the only place colour, type and shape are defined.
- * Kascade Studio: warm near-black, cream type, and one sea-glass accent
- * (water — the cascade that fills the gaps). Swap values here, not in components.
+ * Monochrome: black, white and greys. Emphasis is white against grey.
+ * --brand is the single slot for a future brand colour (currently white).
  */
 :root {
   /* Type */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  --font-serif: var(--font-instrument-serif), "Iowan Old Style", Georgia, serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Menlo, monospace;
-  --font-dots: var(--font-doto), var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-inter-tight), "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  /* Surfaces and ink — warm, never pure black or white */
-  --bg: #15130f;
-  --surface: #1c1915;
-  --ink: #f2ede4;
-  --ink-2: #cdc6ba;
-  --ink-3: #928b80;
-  --line: #2b2721;
-  --line-strong: #433d35;
+  /* Dark surfaces and type */
+  --bg: #000000;
+  --surface: #111111;
+  --surface-2: #1a1a1a;
+  --ink: #ffffff;
+  /* Grey for the quieter half of two-tone text and small details (6:1 on black) */
+  --mute: #8f8f8f;
+  --line: #1f1f1f;
+  --line-strong: #333333;
 
-  /* The light half of the opening screen, and the type on it */
-  --light: #ece7de;
-  --on-light: #15130f;
-  --on-light-2: #4d483f;
-  --on-light-3: #8a847a;
+  /* The light half of the opening screen, and light cards */
+  --light: #efefef;
+  --on-light: #000000;
+  --on-light-mute: #6b6b6b;
 
-  /* Sea-glass: the single accent, used sparingly */
-  --accent: #a8d8cc;
-  --accent-deep: #3f6e66;
-  --accent-soft: rgba(168, 216, 204, 0.1);
-  --glow: rgba(168, 216, 204, 0.075);
+  /* Brand colour slot: Real Coder's earnings and focus. Change here only. */
+  --brand: #ffffff;
 
   /* Shape and motion */
-  --radius: 4px;
+  --radius: 24px;
+  --radius-sm: 12px;
   --header: 60px;
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 

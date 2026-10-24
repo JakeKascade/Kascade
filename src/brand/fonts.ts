@@ -1,27 +1,13 @@
 /**
- * Brand typefaces (all SIL Open Font License), self-hosted through next/font:
- * - Geist Sans: everything by default.
- * - Instrument Serif italic: at most one highlighted word or phrase per heading.
- * - Geist Mono: small uppercase labels.
- * - Doto: dot-matrix numerals for steps and terms only.
- * The CSS refers only to --font-sans, --font-serif, --font-mono and --font-dots.
+ * One typeface: Inter Tight (SIL Open Font License), self-hosted through
+ * next/font. Light and regular weights, tight tracking; emphasis comes from
+ * colour (white against grey), never from a second face. The CSS refers only
+ * to --font-sans.
  */
-import { Doto, Instrument_Serif } from "next/font/google";
+import { Inter_Tight } from "next/font/google";
 
-export { GeistSans as sans } from "geist/font/sans";
-export { GeistMono as mono } from "geist/font/mono";
-
-export const serif = Instrument_Serif({
+export const sans = Inter_Tight({
   subsets: ["latin"],
-  weight: "400",
-  style: ["italic", "normal"],
-  variable: "--font-instrument-serif",
-  display: "swap",
-});
-
-export const dots = Doto({
-  subsets: ["latin"],
-  weight: ["500", "700"],
-  variable: "--font-doto",
+  variable: "--font-inter-tight",
   display: "swap",
 });

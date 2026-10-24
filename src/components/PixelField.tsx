@@ -3,10 +3,11 @@ import { useEffect, useRef, type RefObject } from "react";
 
 /**
  * The opening screen's background: a field of square cells in two colours.
- * Light at the top, breaking down into the dark page below, with small
- * minesweeper-style counts beside the dark cells. The dark rises into place
- * on load, a few edge cells quietly flip, and the cell under the pointer
- * lights up in sea-glass. Text sits in a zone that is always kept light.
+ * Light at the top, breaking down into the black page below. Shapes have
+ * softly rounded outer corners and filleted inner corners, so the masses read
+ * as smooth stepped forms. The dark rises into place on load, a few edge cells
+ * quietly flip, and the cell under the pointer softly highlights. Text sits
+ * in a zone that is always kept light.
  */
 
 function seeded(seed: number) {
@@ -45,11 +46,11 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
     const ctx = el?.getContext("2d");
     if (!el || !host || !ctx) return;
     const css = getComputedStyle(document.documentElement);
-    const light = css.getPropertyValue("--light").trim() || "#ece7de";
-    const dark = css.getPropertyValue("--bg").trim() || "#15130f";
-    const accent = css.getPropertyValue("--accent").trim() || "#a8d8cc";
-    const digit = css.getPropertyValue("--on-light-3").trim() || "#8a847a";
-    const mono = css.getPropertyValue("--font-mono").trim() || "monospace";
+    const light = css.getPropertyValue("--light").trim() || "#efefef";
+    const dark = css.getPropertyValue("--bg").trim() || "#000000";
+    // The pointer's cell: a step darker on light, a step lighter on dark.
+    const hoverOnLight = "#d4d4d4";
+    const hoverOnDark = "#262626";
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let width = 0,
@@ -127,7 +128,7 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
             target[idx(x + 1, y)] !== target[i] ||
             target[idx(x, y - 1)] !== target[i] ||
             target[idx(x, y + 1)] !== target[i];
-          if (!near && random() < 0.006) target[i] = !target[i];
+          if (!near) continue;
           else if (near && random() < 0.14) target[i] = !target[i];
         }
       reveal = target.map((_, i) => {
@@ -144,41 +145,65 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
 
     const draw = (t: number) => {
       if (!width || !height) return;
+      const r = size * 0.3;
+      const darkAt = (x: number, y: number) =>
+        x >= 0 && y >= 0 && x < cols && y < rows ? isDark(idx(x, y), t) : y >= rows;
       ctx.fillStyle = light;
       ctx.fillRect(0, 0, width, height);
+      // Dark cells, rounding only the corners where both neighbours are light.
       ctx.fillStyle = dark;
-      for (let y = 0; y < rows; y++)
-        for (let x = 0; x < cols; x++)
-          if (isDark(idx(x, y), t)) ctx.fillRect(x * size, y * size, size + 0.5, size + 0.5);
-      // Counts of dark neighbours in some light cells, as in minesweeper.
-      ctx.font = `500 ${Math.round(size * 0.26)}px ${mono}`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = digit;
+      ctx.beginPath();
       for (let y = 0; y < rows; y++)
         for (let x = 0; x < cols; x++) {
-          const i = idx(x, y);
-          if (clear[i] || isDark(i, t) || hash(x + 3, y + 7) > 0.55) continue;
-          let n = 0;
-          for (let dy = -1; dy <= 1; dy++)
-            for (let dx = -1; dx <= 1; dx++) {
-              if (!dx && !dy) continue;
-              const nx = x + dx,
-                ny = y + dy;
-              if (nx >= 0 && ny >= 0 && nx < cols && ny < rows && isDark(idx(nx, ny), t)) n++;
-            }
-          if (n) ctx.fillText(String(n), x * size + size / 2, y * size + size / 2 + 0.5);
+          if (!darkAt(x, y)) continue;
+          const up = darkAt(x, y - 1),
+            down = darkAt(x, y + 1),
+            left = darkAt(x - 1, y),
+            right = darkAt(x + 1, y);
+          ctx.roundRect(x * size, y * size, size + 0.5, size + 0.5, [
+            !up && !left ? r : 0,
+            !up && !right ? r : 0,
+            !down && !right ? r : 0,
+            !down && !left ? r : 0,
+          ]);
         }
-      // The pointer's cell in sea-glass, fading as it moves on.
-      ctx.fillStyle = accent;
+      ctx.fill();
+      // Inner corners: fillet a light cell's corner where three dark cells meet it.
+      for (let y = 0; y < rows; y++)
+        for (let x = 0; x < cols; x++) {
+          if (darkAt(x, y)) continue;
+          const corners: [number, number][] = [
+            [-1, -1],
+            [1, -1],
+            [1, 1],
+            [-1, 1],
+          ];
+          for (const [dx, dy] of corners) {
+            if (!darkAt(x + dx, y) || !darkAt(x, y + dy) || !darkAt(x + dx, y + dy)) continue;
+            const cx = x * size + (dx > 0 ? size : 0),
+              cy = y * size + (dy > 0 ? size : 0);
+            const sx = dx > 0 ? -1 : 1,
+              sy = dy > 0 ? -1 : 1;
+            ctx.fillStyle = dark;
+            ctx.fillRect(Math.min(cx, cx + sx * r), Math.min(cy, cy + sy * r), r, r);
+            ctx.fillStyle = light;
+            ctx.beginPath();
+            ctx.arc(cx + sx * r, cy + sy * r, r, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      // The pointer's cell, fading as it moves on.
       for (const [i, at] of hover) {
         const a = i === pointer ? 1 : 1 - (t - at) / 0.7;
         if (a <= 0) {
           hover.delete(i);
           continue;
         }
-        ctx.globalAlpha = a * 0.9;
-        ctx.fillRect((i % cols) * size, Math.floor(i / cols) * size, size, size);
+        ctx.globalAlpha = a;
+        ctx.fillStyle = isDark(i, t) ? hoverOnDark : hoverOnLight;
+        ctx.beginPath();
+        ctx.roundRect((i % cols) * size + 2, Math.floor(i / cols) * size + 2, size - 4, size - 4, r * 0.8);
+        ctx.fill();
       }
       ctx.globalAlpha = 1;
     };
