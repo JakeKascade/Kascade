@@ -3,6 +3,8 @@ import { useRef } from "react";
 import { BRAND } from "@/brand/brand";
 import PixelField from "../PixelField";
 import { tone } from "../Primitives";
+import RealCoderLogo from "../RealCoderLogo";
+import Wordmark from "../Wordmark";
 
 export default function Hero() {
   const copy = useRef<HTMLDivElement>(null);
@@ -22,6 +24,13 @@ export default function Hero() {
           </p>
         </div>
       </div>
+      {/* Phones: the logos sit centred in the black at the foot of the screen
+          (the header carries a small nav instead). The title already names both. */}
+      <p className="hero-lockup lockup" aria-hidden="true">
+        <Wordmark />
+        <span className="lockup-x">×</span>
+        <RealCoderLogo />
+      </p>
     </section>
   );
 }

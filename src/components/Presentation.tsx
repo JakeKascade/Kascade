@@ -54,6 +54,11 @@ export default function Presentation() {
         </a>
         <span className="header-meta">Partnership proposal</span>
         <span className="header-meta">{BRAND.dated}</span>
+        <nav className="header-nav" aria-label="Jump to">
+          <a href="#branding">Pricing</a>
+          <a href="#calculator">Calculator</a>
+          <a href="#terms">Terms</a>
+        </nav>
       </header>
       <span className="read-progress" ref={progress} aria-hidden="true" />
       <main>
