@@ -179,8 +179,11 @@ li {
   transform-origin: left;
 }
 
-/* Screens: one job each. No dividers; neighbouring screens alternate between
-   two close shades, each with a soft blue light in a different corner. */
+/* Screens: one job each. The background system:
+   - base charcoal for the opening and the money screens, raised charcoal for
+     the services, light for the close;
+   - a pixel strip wherever the colour changes, never a hard line;
+   - one soft glow on just two screens, and the dot pattern only once. */
 .screen {
   position: relative;
   isolation: isolate;
@@ -190,19 +193,67 @@ li {
   flex-direction: column;
   justify-content: center;
   padding-block: clamp(80px, 12vh, 140px);
-  background:
-    radial-gradient(55% 65% at var(--gx, 100%) var(--gy, 0%), var(--glow), transparent 72%),
-    var(--bg-2);
+  background: var(--bg);
   scroll-snap-align: start;
 }
-/* Even screens use the base colour, so "Who does what" continues straight on
-   from the bottom of the pixel field, with its light low in the far corner. */
-.screen:nth-of-type(even) {
-  --gx: 0%;
-  --gy: 100%;
+.screen-raised {
+  background: var(--bg-2);
+}
+.has-glow {
   background:
-    radial-gradient(55% 65% at var(--gx) var(--gy), var(--glow), transparent 72%),
+    radial-gradient(45% 55% at var(--glow-at, 50% 50%), var(--glow), transparent 72%),
     var(--bg);
+}
+.has-dots::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: -1;
+  width: min(560px, 70%);
+  height: 55%;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1.4px);
+  background-size: 9px 9px;
+  -webkit-mask-image: radial-gradient(circle at 0% 100%, #000, transparent 70%);
+  mask-image: radial-gradient(circle at 0% 100%, #000, transparent 70%);
+}
+/* The light closing screen */
+.screen-light {
+  background: var(--light);
+  color: var(--on-light-mute);
+}
+.screen-light .title,
+.screen-light .fine,
+.screen-light .step-num {
+  color: var(--on-light-mute);
+}
+.screen-light .hi,
+.screen-light .next li {
+  color: var(--on-light);
+}
+.screen-light .next li {
+  border-top-color: rgba(17, 19, 23, 0.12);
+}
+/* Pixel strips between differently coloured groups */
+.pixel-band {
+  line-height: 0;
+  background: linear-gradient(var(--from) 50%, var(--to) 50%);
+}
+.pixel-band canvas {
+  display: block;
+  width: 100%;
+  height: 180px;
+}
+@media (max-width: 1099px) {
+  .pixel-band canvas {
+    height: 130px;
+  }
+}
+@media (max-width: 599px) {
+  .pixel-band canvas {
+    height: 110px;
+  }
 }
 /* "Who does what" reads as the continuation of the opening screen. */
 .screen-hero + .screen {
@@ -221,21 +272,6 @@ li {
 .screen-centered .next {
   max-width: 760px;
   margin-inline: auto;
-}
-/* A faint dot pattern fading out of one corner, as in printed decks. */
-.screen:nth-of-type(odd):not(.screen-hero)::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  z-index: -1;
-  width: min(520px, 60%);
-  height: 50%;
-  pointer-events: none;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1.4px);
-  background-size: 9px 9px;
-  -webkit-mask-image: radial-gradient(circle at 0% 100%, #000, transparent 70%);
-  mask-image: radial-gradient(circle at 0% 100%, #000, transparent 70%);
 }
 .screen-head {
   margin-bottom: clamp(36px, 6vh, 64px);
@@ -276,7 +312,9 @@ li {
 }
 .hero-copy {
   width: fit-content;
-  max-width: min(860px, 100%);
+  max-width: min(900px, 100%);
+  margin-inline: auto;
+  text-align: center;
 }
 .screen-hero h1 {
   font-size: clamp(46px, 7vw, 108px);
@@ -290,7 +328,7 @@ li {
   color: var(--on-light);
 }
 .hero-line {
-  margin-top: 28px;
+  margin: 28px auto 0;
   max-width: 620px;
   font-size: clamp(20px, 2vw, 28px);
   line-height: 1.35;
@@ -989,7 +1027,14 @@ li {
   letter-spacing: 0;
 }
 .colophon {
-  margin-top: clamp(48px, 9vh, 96px);
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  margin-top: clamp(56px, 10vh, 112px);
+  text-align: center;
+}
+.colophon .logo {
+  height: 24px;
 }
 
 /* Access gate */
@@ -1084,6 +1129,7 @@ li {
   }
   .screen-hero {
     min-height: 100svh;
+    padding-top: 24svh;
   }
 }
 @media (max-height: 699px) and (min-width: 720px) {
@@ -1134,16 +1180,19 @@ li {
     content: url("/brand/kascade-logo-black.svg");
   }
   body::after,
-  .screen::after {
+  .has-dots::after {
     display: none;
   }
   .read-progress,
+  .pixel-band,
   .pixel-field,
   .disclosure-icon {
     display: none;
   }
   .screen,
-  .screen:nth-of-type(even) {
+  .screen-raised,
+  .screen-light,
+  .has-glow {
     min-height: 0;
     display: block;
     padding-block: 32px;

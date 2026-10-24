@@ -1,6 +1,7 @@
 import { BRAND } from "@/brand/brand";
 import { REFERRAL_TERMS } from "@/data/catalog";
 import { Screen, tone } from "../Primitives";
+import Wordmark from "../Wordmark";
 
 const TERMS = [
   "10% of every payment a referred client makes, excluding GST.",
@@ -40,7 +41,7 @@ const NEXT = [
 
 export function NextSteps() {
   return (
-    <Screen id="next" centered title={tone("**Next** steps")}>
+    <Screen id="next" centered tone="light" title={tone("**Next** steps")}>
       <ol className="next">
         {NEXT.map((n, i) => (
           <li key={n}>
@@ -49,10 +50,12 @@ export function NextSteps() {
           </li>
         ))}
       </ol>
-      <p className="fine colophon">
-        {BRAND.status} · Prepared for {BRAND.audience} at {BRAND.partner} ·{" "}
-        {BRAND.dated} · All prices AUD excluding GST
-      </p>
+      <footer className="colophon">
+        <Wordmark tone="black" />
+        <p className="fine">
+          Prepared for {BRAND.audience} at {BRAND.partner} · {BRAND.dated} · All prices AUD excluding GST
+        </p>
+      </footer>
     </Screen>
   );
 }

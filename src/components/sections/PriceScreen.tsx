@@ -22,7 +22,7 @@ function earns(row: PriceRow) {
 /** The same price list for every service: package, what it is, price, Real Coder's 10%. */
 export default function PriceScreen({ list }: { list: PriceList }) {
   return (
-    <Screen id={list.id} title={emphasise(list.title, list.emphasis)} intro={list.intro}>
+    <Screen id={list.id} tone="raised" dots={list.id === "branding"} title={emphasise(list.title, list.emphasis)} intro={list.intro}>
       <table className="prices" data-testid={`prices-${list.id}`}>
         <caption className="sr-only">
           {list.title} prices and Real Coder’s commission, AUD excluding GST

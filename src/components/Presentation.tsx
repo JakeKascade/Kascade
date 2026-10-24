@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { BRAND } from "@/brand/brand";
 import { PRICE_LISTS } from "@/data/pricing";
+import PixelBand from "./PixelBand";
 import Wordmark from "./Wordmark";
 import Calculator from "./sections/Calculator";
 import { NextSteps, Terms } from "./sections/Close";
@@ -56,12 +57,15 @@ export default function Presentation() {
         <Hero />
         <Roles />
         <Gains />
+        <PixelBand from="--bg" to="--bg-2" seed={11} />
         {PRICE_LISTS.map((list) => (
           <PriceScreen key={list.id} list={list} />
         ))}
+        <PixelBand from="--bg-2" to="--bg" seed={23} />
         <Referrals />
         <Calculator />
         <Terms />
+        <PixelBand from="--bg" to="--light" seed={37} />
         <NextSteps />
       </main>
     </>

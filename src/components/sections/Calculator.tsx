@@ -16,6 +16,7 @@ export default function Calculator() {
   return (
     <Screen
       id="calculator"
+      glow="82% 40%"
       title={tone("Calculate **your earnings**")}
       intro="Choose how many clients you might refer in a year."
     >
