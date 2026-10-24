@@ -2,6 +2,8 @@
  * on the server; the browser only ever holds a hash of it in an httpOnly cookie.
  * This deters casual sharing; it is not enterprise authentication. */
 export const ACCESS_COOKIE = "kascade_proposal_access";
+/** Set by the proxy on the code screen: which proposal's link was opened. */
+export const PROPOSAL_HEADER = "x-kascade-proposal";
 export const ACCESS_MAX_AGE = 60 * 60 * 24 * 30;
 /** Local development only, so the site opens without configuration. */
 const DEVELOPMENT_CODE = "2026";

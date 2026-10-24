@@ -76,7 +76,12 @@ test("production asks for the access code, never sends the proposal before it, a
     // Locked, the bare address shows the code screen without naming any proposal.
     const bare = await fetch(base, { redirect: "manual" });
     assert.equal(bare.status, 200);
-    assert.doesNotMatch(await bare.text(), /real-coder/i);
+    assert.doesNotMatch(await bare.text(), /real[-_ ]?coder/i);
+    // The proposal's own link shows the partner on its code screen, and
+    // a spoofed header can't make the bare address do the same.
+    assert.match(await (await fetch(base + "/real-coder")).text(), /aria-label="Real Coder"/);
+    const spoofed = await fetch(base, { headers: { "x-kascade-proposal": "real-coder" } });
+    assert.doesNotMatch(await spoofed.text(), /real[-_ ]?coder/i);
     // Unlocked, it forwards to the proposal's own path.
     const forward = await fetch(base, { headers: session, redirect: "manual" });
     assert.equal(forward.status, 307);

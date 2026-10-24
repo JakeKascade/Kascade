@@ -4,9 +4,9 @@ import { sans } from "@/brand/fonts";
 import "@/brand/tokens.css";
 import "./globals.css";
 
+// Neutral by default: only the proposal's own page (and its code screen) names the partner.
 export const metadata: Metadata = {
-  title: BRAND.title,
-  description: BRAND.description,
+  title: `${BRAND.studio} — Private proposal`,
   robots: { index: false, follow: false, nocache: true },
 };
 export const viewport: Viewport = {
