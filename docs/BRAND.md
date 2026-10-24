@@ -31,11 +31,11 @@ Components never hard-code a colour; `globals.css` refers only to tokens (the pr
   | Pixel strip (`PixelBand`) | Wherever the background changes: into the price lists, out of them, and into Next steps |
 
   The pixel strips share the opening screen’s cell size, rounding and fillets (`src/lib/pixels.ts`), so every change of background steps down in the same rounded cells instead of a hard line.
-- **Earnings colour (`--brand`):** the one colour, used only for Real Coder’s earnings — the price-list earnings column, the worked examples and the calculator card. Currently **A · Steel blue** `#8DB4E2` (deep `#5D84B3`). Alternatives, each a two-value change in `tokens.css`:
+- **Earnings colour (`--brand`):** the one colour, used only for Real Coder’s earnings — the price-list earnings column, the worked examples and the calculator card. **Chosen: A · Steel blue** `#8DB4E2` (deep `#5D84B3`), confirmed October 2026. The options considered, each a two-value change in `tokens.css`:
 
   | Option | `--brand` | `--brand-deep` |
   |---|---|---|
-  | A · Steel blue (current) | `#8DB4E2` | `#5D84B3` |
+  | A · Steel blue (chosen) | `#8DB4E2` | `#5D84B3` |
   | B · Glacier | `#BCD6EE` | `#86A8C9` |
   | C · Sea-glass | `#9AD1C4` | `#5F9A8D` |
   | D · Sage | `#BCCAA9` | `#87977A` |
