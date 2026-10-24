@@ -66,8 +66,10 @@ test("every price list uses the same columns and catalogue figures", async ({ pa
   for (const list of PRICE_LISTS) {
     const table = page.getByTestId(`prices-${list.id}`);
     await expect(table.locator("tbody tr")).toHaveCount(list.rows.length);
-    if ((page.viewportSize()?.width ?? 1000) > 640)
-      await expect(table.locator("thead th")).toHaveText(["Package", "Price", "Real Coder earns"]);
+    // Phones say the billing period once, in the header, instead of on every row.
+    const narrow = (page.viewportSize()?.width ?? 1000) <= 640;
+    const price = narrow ? `Price, ${list.billing === "once" ? "one-off" : "per month"}` : "Price";
+    await expect(table.locator("thead th")).toHaveText(["Package", price, "Real Coder earns"], { useInnerText: true });
     for (const row of list.rows)
       if (typeof row.price === "number")
         await expect(table).toContainText(money(commissionOn(row.price, 1000)));

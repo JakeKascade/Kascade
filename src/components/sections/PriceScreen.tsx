@@ -30,7 +30,9 @@ export default function PriceScreen({ list }: { list: PriceList }) {
         <thead>
           <tr>
             <th scope="col">Package</th>
-            <th scope="col">Price</th>
+            <th scope="col">
+              Price<span className="th-unit">, {list.billing === "once" ? "one-off" : "per month"}</span>
+            </th>
             <th scope="col">Real Coder earns</th>
           </tr>
         </thead>

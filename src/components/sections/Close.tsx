@@ -1,6 +1,7 @@
 import { BRAND } from "@/brand/brand";
 import { REFERRAL_TERMS } from "@/data/catalog";
 import { Screen, tone } from "../Primitives";
+import RealCoderLogo from "../RealCoderLogo";
 import Wordmark from "../Wordmark";
 
 const TERMS = [
@@ -51,7 +52,11 @@ export function NextSteps() {
         ))}
       </ol>
       <footer className="colophon">
-        <Wordmark tone="black" />
+        <span className="lockup">
+          <Wordmark tone="black" />
+          <span className="lockup-x" aria-hidden="true">×</span>
+          <RealCoderLogo />
+        </span>
         <p className="fine">
           Prepared for {BRAND.audience} at {BRAND.partner} · {BRAND.dated} · All prices AUD excluding GST
         </p>

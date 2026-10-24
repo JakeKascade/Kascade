@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import { BRAND } from "@/brand/brand";
 import { PRICE_LISTS } from "@/data/pricing";
 import PixelBand from "./PixelBand";
+import RealCoderLogo from "./RealCoderLogo";
 import Wordmark from "./Wordmark";
 import Calculator from "./sections/Calculator";
 import { NextSteps, Terms } from "./sections/Close";
@@ -46,8 +47,10 @@ export default function Presentation() {
     <>
       {/* Blends with whatever is behind it, so it reads on the light hero and the dark page. */}
       <header className="site-header">
-        <a className="brand" href="#top" aria-label={`${BRAND.studio}, back to the top`}>
+        <a className="brand" href="#top" aria-label={`${BRAND.studio} and ${BRAND.partner}, back to the top`}>
           <Wordmark />
+          <span className="lockup-x" aria-hidden="true">×</span>
+          <RealCoderLogo />
         </a>
         <span className="header-meta">Partnership proposal</span>
         <span className="header-meta">{BRAND.dated}</span>
