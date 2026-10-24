@@ -1,6 +1,6 @@
 import { BRAND } from "@/brand/brand";
 import { REFERRAL_TERMS } from "@/data/catalog";
-import { Screen, emphasise } from "../Primitives";
+import { Screen, tone } from "../Primitives";
 
 const TERMS = [
   "10% of every payment a referred client makes, excluding GST.",
@@ -14,7 +14,7 @@ const TERMS = [
 
 export function Terms() {
   return (
-    <Screen id="terms" title="Terms">
+    <Screen id="terms" title={tone("**Terms**")}>
       <ol className="terms">
         {TERMS.map((t) => (
           <li key={t}>{t}</li>
@@ -40,7 +40,7 @@ const NEXT = [
 
 export function NextSteps() {
   return (
-    <Screen id="next" title={emphasise("Next steps", "steps")}>
+    <Screen id="next" title={tone("**Next** steps")}>
       <ol className="next">
         {NEXT.map((n, i) => (
           <li key={n}>

@@ -54,7 +54,7 @@ export const PRICE_LISTS: readonly PriceList[] = [
   {
     id: "branding",
     title: "Branding & Identity",
-    emphasis: "&",
+    emphasis: "Branding",
     intro: "Logos and brand identities for new or growing businesses.",
     billing: "once",
     rows: [
@@ -137,7 +137,7 @@ export const PRICE_LISTS: readonly PriceList[] = [
   {
     id: "ongoing",
     title: "Ongoing Design Retainers",
-    emphasis: "Ongoing",
+    emphasis: "Ongoing Design",
     intro: "An embedded design department for businesses outside real estate, by the month.",
     billing: "monthly",
     rows: (["essential", "creativeGrowth", "embedded"] as const).map((id) => ({

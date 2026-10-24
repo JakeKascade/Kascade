@@ -2,7 +2,7 @@ import { REFERRAL_TERMS, SERVICES, type ServiceId } from "@/data/catalog";
 import { CAP_MONTHS, RATE_BPS } from "@/data/pricing";
 import { money } from "@/lib/format";
 import { commissionOn, retainerCommissionOver } from "@/lib/referral-model";
-import { Frame, Screen, emphasise } from "../Primitives";
+import { Card, Screen, tone } from "../Primitives";
 
 const STEPS = [
   { title: "You introduce", text: "A client who needs design, with their permission." },
@@ -25,7 +25,7 @@ function Example({ id, label }: { id: ServiceId; label: string }) {
   const monthly = SERVICES[id].billing === "monthly";
   const suffix = monthly ? " a month" : "";
   return (
-    <Frame className="example">
+    <Card className="example">
     <figure aria-label={`${label}: the client pays ${money(paid)}${suffix}; Real Coder earns ${money(fee)}${suffix}`}>
       <figcaption>
         <span>{label}</span>
@@ -60,13 +60,13 @@ function Example({ id, label }: { id: ServiceId; label: string }) {
         </div>
       </dl>
     </figure>
-    </Frame>
+    </Card>
   );
 }
 
 export default function Referrals() {
   return (
-    <Screen id="referrals" title={emphasise("How referrals work", "referrals")}>
+    <Screen id="referrals" title={tone("**How referrals** work")}>
       <ol className="steps">
         {STEPS.map((s, i) => (
           <li key={s.title}>

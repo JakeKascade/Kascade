@@ -43,30 +43,35 @@ export function Money({ cents, className, testId }: { cents: number; className?:
   );
 }
 
-/** Sets one word or phrase of a heading in the serif italic. Use once per heading at most. */
+/** Two-tone text: the given word or phrase in white, the rest in grey. */
 export function emphasise(text: string, word?: string): ReactNode {
   const at = word ? text.indexOf(word) : -1;
   if (!word || at < 0) return text;
   return (
     <>
       {text.slice(0, at)}
-      <em>{word}</em>
+      <span className="hi">{word}</span>
       {text.slice(at + word.length)}
     </>
   );
 }
 
-/** A hairline frame with small + marks at its corners. */
-export function Frame({ children, className = "" }: { children: ReactNode; className?: string }) {
-  return (
-    <div className={`frame ${className}`}>
-      <span className="corner corner-tl" aria-hidden="true" />
-      <span className="corner corner-tr" aria-hidden="true" />
-      <span className="corner corner-bl" aria-hidden="true" />
-      <span className="corner corner-br" aria-hidden="true" />
-      {children}
-    </div>
+/** Two-tone text from light markup: **these parts** in white, the rest in grey. */
+export function tone(markup: string): ReactNode {
+  return markup.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
+    part.startsWith("**") ? (
+      <span key={i} className="hi">
+        {part.slice(2, -2)}
+      </span>
+    ) : (
+      part
+    ),
   );
+}
+
+/** A rounded card. */
+export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <div className={`card ${className}`}>{children}</div>;
 }
 
 /** A full-height screen with one clear heading and an optional intro line. */
