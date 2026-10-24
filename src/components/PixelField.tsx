@@ -6,9 +6,10 @@ import { cellSize, drawCells, noise, seeded } from "@/lib/pixels";
  * The opening screen's background: a field of square cells in two colours.
  * Light at the top, breaking down into the black page below. Shapes have
  * softly rounded outer corners and filleted inner corners, so the masses read
- * as smooth stepped forms. The dark rises into place on load, a few edge cells
- * quietly flip, and the cell under the pointer softly highlights. Text sits
- * in a zone that is always kept light.
+ * as smooth stepped forms. Every load opens on solid black, like the code
+ * screen, and the black pours away from top to bottom, column by column,
+ * leaving the field. Then a few edge cells quietly flip, and the cell under
+ * the pointer softly highlights. Text sits in a zone that is always kept light.
  */
 
 export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLElement | null> }) {
@@ -38,7 +39,7 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
       start = 0,
       lastFlip = 0;
     let target: boolean[] = []; // final dark/light per cell
-    let reveal: number[] = []; // seconds until a dark cell appears
+    let reveal: number[] = []; // seconds until a cell's opening black clears
     let clear: boolean[] = []; // cells kept light for the text
     let flips = new Map<number, number>(); // cell → time it flips back
     const hover = new Map<number, number>(); // cell → time last pointed at
@@ -103,13 +104,14 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
               (noise(x * 0.36 + 9, y * 0.36) - 0.5) * 0.2;
             isDark = level > edge;
           }
-          if (y >= rows - 2) isDark = true;
+          // The foot stays solid; on phones it carries the logos.
+          if (y >= rows - (narrow ? 4 : 2)) isDark = true;
           if (inText) isDark = false;
           clear.push(inText);
           target.push(isDark);
         }
       // Scatter single cells along the edge, like the reference: islands both ways.
-      for (let y = 1; y < rows - 2; y++)
+      for (let y = 1; y < rows - (narrow ? 4 : 2); y++)
         for (let x = 1; x < cols - 1; x++) {
           const i = idx(x, y);
           if (clear[i]) continue;
@@ -121,15 +123,18 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
           if (!near) continue;
           else if (near && random() < 0.14) target[i] = !target[i];
         }
+      // Top to bottom, each column a little ahead or behind its neighbours.
+      const lag = Array.from({ length: cols }, (_, x) => noise(x * 0.35 + 5, 2.5));
       reveal = target.map((_, i) => {
-        const y = Math.floor(i / cols);
-        return reduce ? 0 : 0.15 + (1 - y / rows) * 0.9 + random() * 0.18;
+        const x = i % cols,
+          y = Math.floor(i / cols);
+        return reduce ? 0 : 0.25 + (y / rows) * 1.1 + lag[x] * 0.3 + random() * 0.1;
       });
       flips = new Map();
     };
 
     const isDark = (i: number, t: number) => {
-      const on = target[i] && t >= reveal[i];
+      const on = target[i] || t < reveal[i];
       return flips.has(i) ? !on : on;
     };
 
@@ -196,6 +201,8 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
     start = performance.now();
     layout();
     draw(reduce ? 99 : 0);
+    // Bring the text in as the black clears past it.
+    const opened = window.setTimeout(() => host.setAttribute("data-open", ""), reduce ? 0 : 650);
     const resize = new ResizeObserver(() => {
       layout();
       draw((performance.now() - start) / 1000);
@@ -213,6 +220,7 @@ export default function PixelField({ keepClear }: { keepClear: RefObject<HTMLEle
     host.addEventListener("pointerleave", onLeave);
     return () => {
       pause();
+      window.clearTimeout(opened);
       resize.disconnect();
       visible.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);

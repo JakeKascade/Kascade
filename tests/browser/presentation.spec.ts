@@ -130,6 +130,25 @@ test("keyboard, reduced motion and print are usable", async ({ page }, info) => 
     await page.pdf({ path: "artifacts/kascade-real-coder-print.pdf", format: "A4", printBackground: true });
 });
 
+test("phones get a jump nav up top and the logos at the foot of the opening screen", async ({ page }, info) => {
+  await open(page);
+  const nav = page.getByRole("navigation", { name: "Jump to" });
+  const lockup = page.locator(".hero-lockup");
+  if (info.project.name !== "phone-390") {
+    await expect(nav).toBeHidden();
+    await expect(lockup).toBeHidden();
+    return;
+  }
+  await expect(nav.getByRole("link")).toHaveText(["Pricing", "Calculator", "Terms"]);
+  for (const box of await nav.getByRole("link").evaluateAll((els) => els.map((el) => el.getBoundingClientRect().height)))
+    expect(box).toBeGreaterThanOrEqual(44);
+  const hero = await page.locator("#top").boundingBox();
+  const logos = await lockup.boundingBox();
+  expect(logos && hero && logos.y + logos.height <= hero.y + hero.height && logos.y > hero.y + hero.height - 120).toBe(true);
+  await nav.getByRole("link", { name: "Calculator" }).click();
+  await expect(page).toHaveURL(/#calculator$/);
+});
+
 test("touch targets are at least 44px and landscape phones don't scroll sideways", async ({ page }, info) => {
   test.skip(info.project.name !== "phone-390", "phone only");
   await open(page, "#calculator");
